@@ -1,8 +1,6 @@
 from datetime import datetime
 
 from bdOps import *
-from pymongo import *
-
 
 
 def get_all(db, collection_name):

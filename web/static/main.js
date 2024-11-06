@@ -21,6 +21,10 @@
 
 
 window.onload = function() {
+	if (localStorage.getItem('authName') === null) {
+		window.location.href = ((window.location.href).replaceAll('.html', ''))+'/reg'
+	}
 	pinger()
-	setInterval(pinger, 2000)
+	setInterval(pinger, 2000);
+	
 }

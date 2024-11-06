@@ -3,9 +3,27 @@ from flask import *
 from flask_cors import CORS
 from dbs import *
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="web", static_folder='web/static',)
 CORS(app)
 
+
+@app.route('/', methods=['GET'])
+def main():
+    #return index.html
+    return render_template('index.html')
+
+@app.route('/reg', methods=['GET'])
+def reg():
+    #return index.html
+    return render_template('registration.html')
+
+
+
+@app.route('/isRegistered', methods=['POST'])
+def isUserExists():
+    data = request.get_json()
+    user_id = data['userName']
+    return isRegistered(user_id)
 
 @app.route('/send', methods=['POST'])
 def send():
