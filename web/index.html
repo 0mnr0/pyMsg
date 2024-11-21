@@ -52,7 +52,7 @@
 		@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 		* {font-family: "Comfortaa", sans-serif;}
 		
-		body {background: #111111; color: white}
+		body {background: #111111; color: white; transition: all .2s}
 		.pingBar {border-radius: 5px; width: 12px; height: 12px; background: red; top: 10px; left: 10px; position: absolute; transition: all .3s}
 		.pingBar.sucsess {background: green}
 		div.MainContent {display: flex; top: 60px; position: relative; height: calc(100% - 60px); padding: 20px; padding-top: 0px}
@@ -91,17 +91,31 @@
 		.scrollToBottom {background: white; padding: 3px; border-radius: 200px; bottom: 12px; left: 12px; position: absolute; color: black; font-weight: 900; text-align: center; width: 30px; aspect-ratio: 1/1; transition: all .3s; cursor: pointer}
 		span.scrollToBottom.visible {bottom: 55px; z-index: 60;}
 		
-		img.uploadFile {position: absolute; z-index: 63; height: calc(100% - 10px); margin: 5px 5px 5px 5px; border-radius: 100px; background: black; padding: 3px; cursor: pointer; min-width: 28px; max-width: 28px;}
+		img.uploadFile {position: absolute; z-index: 63; height: calc(100% - 10px); margin: 5px 5px 5px 5px; border-radius: 100px; background: black; padding: 3px; cursor: pointer; min-width: 28px; max-width: 28px; transition: all .3s}
+		img.uploadFile:hover {scale: 1.4}
 		.fileInput {display: none}
-		.FileChoose {display: flex; display: none; position: absolute; bottom: 45px; gap: 10px; scale: 0.85}
+		.FileChoose {display: flex; display: none; position: absolute; bottom: 45px; gap: 10px; scale: 0.85; z-index: 90}
 		.FileChoose.visible {display: flex;}
 		.FileChoose img {max-width: 16px; aspect-ratio; height: 100%; cursor: pointer}
+		
+		body.inFilePreview .logoutDiv img.logout {opacity: 0.3}
 		
 		.filePreviewer {width: 440px; border-radius: 8px; max-height: 220px; object-fit: cover}
 		
 		
-		.BigPreview {position: fixed; background: #0707076b; border-radius: 10px; z-index: 100; width: 100%; top: 0px; height: 100%;}
-		.BigPreview .BigGilePreview {left: 50%; top: 50%; transform: translate(-50%, -50%); position: relative; height: 90%; max-width: 80%; object-fit: cover; border-radius: 20px;}
+		.BigPreview {position: fixed; background: #0707076b; border-radius: 10px; z-index: 100; width: 100%; top: 0px; height: 100%; transition: all .2s}
+		.BigPreview .BigGilePreview {left: 50%; top: 50%; transform: translate(-50%, -50%); position: relative; height: fit-content; max-width: 80%; object-fit: contain; border-radius: 16px;}
+		
+		
+		.noselect {
+		  -webkit-touch-callout: none; /* iOS Safari */
+			-webkit-user-select: none; /* Safari */
+			 -khtml-user-select: none; /* Konqueror HTML */
+			   -moz-user-select: none; /* Old versions of Firefox */
+				-ms-user-select: none; /* Internet Explorer/Edge */
+					user-select: none; /* Non-prefixed version, currently
+										  supported by Chrome, Edge, Opera and Firefox */
+		}
 	</style>
 	<script src="static/all.js"></script>
 	<script src="static/main.js"></script>
@@ -116,7 +130,7 @@
 	<span class="PyMsgTitle"> PyMsg </span>
 	
 	
-	<div class="MainContent">
+	<div class="MainContent noselect">
 		<div class="UserList"><span class="chatTitleUsers"> Участники: </span></div>
 		<div class="chatBox">
 				<div class="FileChoose">

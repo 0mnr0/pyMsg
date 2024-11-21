@@ -35,7 +35,10 @@ def remove_collection(db, collection_name, confirm=False):
 def send_message(user_id, message, timestamp, file=None):
     #get length of messages
     id = appendID(db)
-    data = { "user_id": user_id, "message": message, "timestamp": timestamp, 'fulltimestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "id": id, "attachment": file}
+    filename = None
+    if file is not None:
+        filename = file.split('\\')[-1]
+    data = { "user_id": user_id, "message": message, "timestamp": timestamp, 'fulltimestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "id": id, "attachment": file, "filename": filename}
     insert_document(db, collection_name="messages", data=data)
     return data
 

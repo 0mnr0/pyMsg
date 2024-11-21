@@ -157,11 +157,13 @@ function createMessageInChat(dat, afterISended){
 			msg.classList.add('myMessage');
 		}
 		let totalInner = `
-			<div class="userCreds"> <span class="userName">${dat.user_id}</span> <img src="https://ionoto.ru/upload/medialibrary/a1f/tcs61nk83dig738gik8qtkcx6ue7sgek.png"></div>
-			<img class="filePreviewer" style="display: none" onload="this.style.display='block'" onerror="this.style.display='none'" src="`+baseUrl+`/`+dat.attachment+`">
-			<video class="filePreviewer" style="" onload="this.style.display='block'" onerror="this.style.display='none'" src="`+baseUrl+`/`+dat.attachment+`"> </video>
-			<span class="text"></span>
-			<span class="timestamp">${dat.timestamp}</span>
+			<div class="userCreds"> <span class="userName">${dat.user_id}</span> <img src="https://ionoto.ru/upload/medialibrary/a1f/tcs61nk83dig738gik8qtkcx6ue7sgek.png"></div>`
+			if (dat.attachment !== null && dat.attachment !== undefined) {
+				totalInner+=`<img class="filePreviewer" style="display: none" onload="this.style.display='block'" onerror="this.style.display='none'" src="`+baseUrl+`/`+dat.attachment+`">
+				<video controls class="filePreviewer" style="" onloadeddata="this.style.display='block'" onerror="this.style.display='none'" src="`+baseUrl+`/`+dat.attachment+`"> </video>`
+			}
+			if (dat.message.length > 0) { totalInner+=`<span class="text"></span>` }
+			totalInner+=`<span class="timestamp">${dat.timestamp}</span>
 		`;
 		
 		 
@@ -176,12 +178,14 @@ function createMessageInChat(dat, afterISended){
 			`
 		}
 		
-		if (ASInner){ 
-			msg.querySelector('span.text').innerHTML = dat.message
-		} else {
-			msg.querySelector('span.text').textContent = dat.message
+		if (msg.querySelector('span.text')){
+			if (ASInner){ 
+				msg.querySelector('span.text').innerHTML = dat.message
+			} else {
+				msg.querySelector('span.text').textContent = dat.message
+			}
 		}
-		msg.style='scale: 0.86; opacity: 0'
+		msg.style='scale: 0.86; opacity: 0;'
 		if (isScrolledToBottom(chat)) {
 			chat.appendChild(msg)
 			chat.scrollTo({top: chat.scrollHeight})
@@ -207,7 +211,7 @@ function createMessageInChat(dat, afterISended){
 		document.querySelectorAll('.filePreviewer').forEach(preview => {
 			preview.addEventListener('click', function(){
 				if (preview.src.indexOf('mp4') != -1 || preview.src.indexOf('mov') != -1) {
-					openFilePreview(preview.src)
+					openFilePreview(preview.src, true)
 				}
 				if (preview.src.indexOf('png') != -1 || preview.src.indexOf('jpg') != -1 || preview.src.indexOf('jpeg') != -1 || preview.src.indexOf('gif') != -1 || preview.src.indexOf('webp') != -1) {
 					openFilePreview(preview.src)

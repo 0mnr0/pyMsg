@@ -28,13 +28,25 @@ function scrollToBottom(){
 
 function openFilePreview(src, video) {
 	document.querySelectorAll('.BigPreview').forEach(preview => {
-		preview.remove()
+		preview.remove();
+		document.body.classList.remove('inFilePreview')
 	})
 	
+	document.body.classList.add('inFilePreview')
 	let fp = document.createElement('div')
-	fp.className = 'BigPreview'
+	fp.className = 'BigPreview noselect';
+	fp.style='opacity: 0'
+	fp.addEventListener('click', function(event){
+		console.log(event.target, fp.querySelector('.BigGilePreview'))
+		if (event.target !== fp.querySelector('.BigGilePreview')){
+			document.body.classList.remove('inFilePreview')
+			fp.style='opacity: 0'
+			setTimeout(function(){fp.remove()}, 200)
+		}
+	})
+	
 	fp.innerHTML = `
-	<img class="BigGilePreview" src="`+src+`" onerror="this.style.display='none' onload="this.style.display='block'">
+		<img class="BigGilePreview" src="`+src+`" onerror="this.style.display='none' onload="this.style.display='block'">
 	`;
 	
 	if (video === true) {
@@ -43,6 +55,9 @@ function openFilePreview(src, video) {
 		`
 	}
 	document.body.appendChild(fp)
+	setTimeout(function(){
+		fp.style='opacity: 1'
+	}, 1)
 	
 }
 
@@ -108,7 +123,7 @@ function fetchDataWithFormAndJson(url, method, formDataObject, jsonObject) {
 function MainPageLoaded() {
 	if (document.querySelector('div.chatBox')) {
 		function SendMyMessage(msg, element){
-			if (msg.replaceAll('\n','').length == 0) {return}
+			if (msg.replaceAll('\n','').length == 0 && selectedFile == null) {return}
 			if (CanSendMessages === true) {
 				if (selectedFile !== null) {
 					fetchDataWithFormAndJson('/send', 'POST', {file: selectedFile}, {user_id: localStorage.getItem('authName'+authVersion), message: msg, pass: localStorage.getItem('password'+authVersion)}).then(res=>{
@@ -124,7 +139,7 @@ function MainPageLoaded() {
 					})
 				}
 			} else {
-				element.replace('\n', '')
+				element.value = element.replace('\n', '')
 			}
 		}
 		
@@ -133,7 +148,7 @@ function MainPageLoaded() {
 		let chat = chatBox.querySelector('div#chat')
 		let chatInput = chatBox.querySelector('textarea#myMessage')
 		chatInput.addEventListener('keypress', function(e){
-			if (e.key === "Enter" && !isShiftPressed) {
+			if (e.key === "Enter" && !isShiftPressed || e.key === "Enter" && selectedFile != null) {
 				SendMyMessage(chatInput.value, chatInput);
 			}
 			if (!isShiftPressed && !CanSendMessages) {
