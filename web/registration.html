@@ -12,21 +12,22 @@
 		.pingBar.sucsess {background: green}
 		.RegistrationWindow {display: flex; position: fixed; top: 50%; left: 50%; flex-direction: column; transform: translate(-50%, -50%); width: 30%;}
 		.RegistrationForm {width: 100%; color: white; display: flex; flex-direction: column; text-align: center; overflow: hidden; box-shadow: 0px 0px 10px 2px #00000090}
-		.RegistrationForm {padding: 10px; padding-top: 0px; border: solid 2px #dadada; outline: none; border-radius: 10px; transition: all .3s; }
+		.RegistrationForm {padding: 12px; padding-top: 0px; border: solid 2px #dadada; outline: none; border-radius: 20px; transition: all .3s; }
 		.RegistrationForm:hover {box-shadow: 0px 0px 10px 2px #55555580;}
-		.RegistrationForm span.MainTitle {font-size: larger; font-weight: bold; padding: 5px 0px}
-		.RegistrationForm input.userName, .RegistrationForm input.userPassword {padding: 5px; color: white; border: solid 2px gray; background: black; border-radius: 5px; outline: none; transition: all .1s}
-		.RegistrationForm input.userName:focus, .RegistrationForm input.userPassword:focus {border: solid 2px white; padding: 5px 50px; border}
-		.RegistrationForm input.userPassword {margin-top: 5px;}
-		.RegistrationForm button.continue:focus {box-shadow: 0px 0px 10px 1px #ffffff8c}
-		.RegistrationForm button.continue {background: transparent; outline: none; margin-top: 10px; border: solid 2px #8f8f8f; border-radius: 5px; color: white; transition: all .1s; padding: 5px}
+		.RegistrationForm span.MainTitle {font-size: larger; font-weight: bold; padding: 5px 0px;}
+		.RegistrationForm input.userName, .RegistrationForm input.userPassword {padding: 5px; color: white; border: solid 2px #979797; background: black; border-radius: 8px; outline: none; transition: all .1s; }
+		.RegistrationForm input.userName:focus, .RegistrationForm input.userPassword:focus {border: solid 2px white; box-shadow: 0px 0px 5px 2px #ffffff5e}
+		.RegistrationForm input.userPassword {margin-top: 5px; padding: 6px}
+		.RegistrationForm button.continue:focus {box-shadow: 0px 0px 10px 1px #ffffff8c; padding-left: 5px;}
+		.RegistrationForm button.continue {background: transparent; outline: none; margin-top: 20px; border: solid 2px #8f8f8f; border-radius: 10px; color: white; transition: all .1s; padding: 5px}
 		.RegistrationForm button.continue:hover {border: solid 2px white; transition: all .1s}
 		.RegistrationForm span.userExistsStatus {transition: all .3s}
 		.RegistrationForm span.userExistsStatus.incorrectuserName {color: #ff7777}
 		.RegistrationForm span.userExistsStatus.correctuserName {color: #77ff89}
 		span.projectTitle {position: fixed; top: 10px; left: 10px; color: white}
+		.switchLoginType {cursor: pointer; color: #ffd1af; font-size: small; margin-top: 2px}
 		
-		.warning {color: #dddddd; background: #222; border-radius: 12px; font-size: small; padding: 10px; margin-top: 10px; box-shadow: 0px 0px 10px 2px #00000090}
+		.warning {color: #dddddd; background: #222; border-radius: 12px; font-size: small; padding: 10px; margin-top: 10px; box-shadow: 0px 0px 10px 2px #00000090; overflow: hidden; transition: all .4s}
 		
 	</style>
 	<script src="static/all.js"></script>
@@ -43,7 +44,8 @@
 			<input class="userName" placeholder="Имя пользователя"></input>
 			<input class="userPassword" placeholder="Пароль"></input>
 			<span class="userExistsStatus"></span>
-			<button class="continue animatedBorder ">Продолжить</button>
+			<button class="continue animatedBorder">Зарегистрироваться</button>
+			<a class="switchLoginType">Или войти в аккаунт</a>
 		</div>
 		<div class="warning">
 			<span> Требования к созданию аккаунта: имя аккаунта не должно быть меньше 3 символов и может содержать только английские буквы и цифры. Пароль должен содержат минимум 4 символа </span>

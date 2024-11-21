@@ -69,6 +69,15 @@ def userRegister():
     regUser(userName, userPassword)
     return {"status": "OK"}
 
+@app.route("/userLogin", methods=["POST"])
+def userLogin():
+    data = request.get_json()
+    userName = data['name']
+    userPassword = data.get('pass')
+    if not verifyUser(userName, userPassword):
+        return {"status": "Unauthorized"}, 401
+    return {"status": "OK"}
+
 @app.route('/send', methods=['POST'])
 def send():
     if request.remote_addr == "192.168.102.111": pass
