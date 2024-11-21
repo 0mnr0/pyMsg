@@ -70,14 +70,14 @@ function MainPageLoaded() {
 	if (document.querySelector('div.chatBox')) {
 		function SendMyMessage(msg, element){
 			if (msg.replaceAll('\n','').length == 0) {return}
-			//if (CanSendMessages === true) {
+			if (CanSendMessages === true) {
 				fetchData('/send', 'POST', {user_id: localStorage.getItem('authName'+authVersion), message: msg, pass: localStorage.getItem('password'+authVersion)}).then(res=> {
 					element.value = '';
 					createMessageInChat(res, true)
 				})
-			//} else {
-			//	console.warn("Message Cooldown working! Try another time"); 
-			//}
+			} else {
+				element.replace('\n', '')
+			}
 		}
 		
 		
@@ -87,6 +87,9 @@ function MainPageLoaded() {
 		chatInput.addEventListener('keypress', function(e){
 			if (e.key === "Enter" && !isShiftPressed) {
 				SendMyMessage(chatInput.value, chatInput);
+			}
+			if (!isShiftPressed && !CanSendMessages) {
+				e.preventDefault();
 			}
 		})
 		if (localStorage.getItem('authName'+authVersion) !== null) {
