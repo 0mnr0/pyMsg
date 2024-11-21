@@ -15,6 +15,14 @@ PeoplesOnline = []
 dictOfMessages = {}
 
 
+@app.route('/uploads/<filename>', methods=['GET'])
+def returnFile(filename):
+    file_path = os.path.join('uploads', filename)
+    if os.path.exists(file_path):
+        return send_from_directory('uploads', filename)
+    else:
+        return "Файл не найден", 404
+
 @app.route('/')
 def index():
     if request.remote_addr == "192.168.102.111":
@@ -63,20 +71,37 @@ def userRegister():
 
 @app.route('/send', methods=['POST'])
 def send():
-    if request.remote_addr == "192.168.102.111":
-        pass
-    data = request.get_json()
-    user_id = data['user_id']
-    print(f"request.remote_addr ({user_id}):", request.remote_addr)
-    message = data['message']
-    userPass = data.get('pass')
-    if not verifyUser(user_id, userPass):
-        return {"status": "Unauthorized"}, 401
+    if request.remote_addr == "192.168.102.111": pass
+    if 'file' in request.files:
+        file = request.files['file']
+        file.save(f'uploads\\{file.filename}')
+        data = request.form.get('json')
+        print(request.form)
+        data = json.loads(data)
+        user_id = data['user_id']
+        message = data['message']
+        userPass = data.get('pass')
+        if not verifyUser(user_id, userPass):
+            return {"status": "Unauthorized"}, 401
 
-    retDat = send_message(user_id, message, datetime.now().strftime("%H:%M:%S"))
-    retDat['_id'] = None
+        retDat = send_message(user_id, message, datetime.now().strftime("%H:%M:%S"), 'uploads\\'+file.filename)
+        retDat['_id'] = None
 
-    return retDat
+        return retDat
+
+    else:
+        data = request.get_json()
+        user_id = data['user_id']
+        print(f"request.remote_addr ({user_id}):", request.remote_addr)
+        message = data['message']
+        userPass = data.get('pass')
+        if not verifyUser(user_id, userPass):
+            return {"status": "Unauthorized"}, 401
+
+        retDat = send_message(user_id, message, datetime.now().strftime("%H:%M:%S"))
+        retDat['_id'] = None
+
+        return retDat
 
 
 

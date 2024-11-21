@@ -1,3 +1,5 @@
+
+let FileInput = null;
 let TameImpalaDict = {
 	0: {text: "I cannot vanish, you will now scare me", time: 3.85},
 	1: {text: "Try to get through it, try to push through it", time: 3.85},
@@ -58,6 +60,35 @@ window.onload = function() {
 	document.querySelector('.scrollToBottom').addEventListener('click', function(){
 		let chat = document.querySelector('div.chatBox #chat')
 		chat.scrollTo({top: chat.scrollHeight*2, behavior: 'smooth'})
+	})
+	
+	fileInput = document.querySelector('input.fileInput');
+	fileName = document.querySelector('span.FileNamePreview');
+	fileChooseDiv = document.querySelector('div.FileChoose');
+	fileChooseImage = document.querySelector('div.FileChoose img');
+	document.querySelector('img.uploadFile').addEventListener('click', function(){
+		fileInput.click()
+	})
+	
+	window.ClearAttachedFiles = function(){
+		fileChooseDiv.classList.remove('visible');
+		selectedFile = null;
+	}
+	fileChooseImage.addEventListener('click', function(){
+		ClearAttachedFiles()
+	})
+	
+	fileInput.addEventListener('change', () => {
+		if (fileInput.files.length > 0) {
+			const file = fileInput.files[0];
+			selectedFile = fileInput.files[0];
+			fileName.textContent= file.name;
+			fileChooseDiv.classList.add('visible')
+		} else {
+			fileChooseDiv.classList.remove('visible')
+			fileName.textContent='';
+			selectedFile = null;
+		}
 	})
 	
 	
@@ -125,11 +156,16 @@ function createMessageInChat(dat, afterISended){
 		if (dat.user_id === 1) {
 			msg.classList.add('myMessage');
 		}
-		msg.innerHTML = `
+		let totalInner = `
 			<div class="userCreds"> <span class="userName">${dat.user_id}</span> <img src="https://ionoto.ru/upload/medialibrary/a1f/tcs61nk83dig738gik8qtkcx6ue7sgek.png"></div>
+			<img class="filePreviewer" style="display: none" onload="this.style.display='block'" onerror="this.style.display='none'" src="`+baseUrl+`/`+dat.attachment+`">
+			<video class="filePreviewer" style="display: none" onload="this.style.display='block'" onerror="this.style.display='none'" src="`+baseUrl+`/`+dat.attachment+`"> </video>
 			<span class="text"></span>
 			<span class="timestamp">${dat.timestamp}</span>
-		`
+		`;
+		
+		 
+		msg.innerHTML = totalInner
 		if (localStorage.getItem('authName'+authVersion) === 'dsvl0' ) {
 			msg.innerHTML = msg.innerHTML + `
 				<img class="deleteMsg" style="display: block" src="https://avatars.mds.yandex.net/i?id=0f3331ccc30ec13e54d074fd5e2c71b926139bba-12540459-images-thumbs&n=13"></img> 

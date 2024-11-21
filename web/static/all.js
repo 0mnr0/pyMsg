@@ -2,6 +2,8 @@
 const baseUrl = 'http://192.168.12.26:8970';
 const authVersion = 'v3';
 var CanSendMessages = true;
+var selectedFile = null;
+
 
 var RmDD = true;
 var ASInner = false;
@@ -43,6 +45,7 @@ function removeLoadedEffect(element) {
 }
 
 
+
 function fetchData(url, method, json) {
     return new Promise((resolve, reject) => {
         fetch(url, {
@@ -66,15 +69,40 @@ function fetchData(url, method, json) {
 
 
 
+function fetchDataWithFormAndJson(url, method, formDataObject, jsonObject) {
+    const formData = new FormData();
+    for (const key in formDataObject) {
+        formData.append(key, formDataObject[key]);
+    }
+    formData.append('json', JSON.stringify(jsonObject));
+
+    return fetch(url, {
+        method: method,
+        body: formData,
+    }).then(response => {return response.json();});
+}
+
+
+
+
 function MainPageLoaded() {
 	if (document.querySelector('div.chatBox')) {
 		function SendMyMessage(msg, element){
 			if (msg.replaceAll('\n','').length == 0) {return}
 			if (CanSendMessages === true) {
-				fetchData('/send', 'POST', {user_id: localStorage.getItem('authName'+authVersion), message: msg, pass: localStorage.getItem('password'+authVersion)}).then(res=> {
+				if (selectedFile !== null) {
+					fetchDataWithFormAndJson('/send', 'POST', {file: selectedFile}, {user_id: localStorage.getItem('authName'+authVersion), message: msg, pass: localStorage.getItem('password'+authVersion)}).then(res=>{
+						createMessageInChat(res, true)
+					})
+					selectedFile = null;
+					ClearAttachedFiles();
 					element.value = '';
-					createMessageInChat(res, true)
-				})
+				} else {		
+					fetchData('/send', 'POST', {user_id: localStorage.getItem('authName'+authVersion), message: msg, pass: localStorage.getItem('password'+authVersion)}).then(res=> {
+						element.value = '';
+						createMessageInChat(res, true)
+					})
+				}
 			} else {
 				element.replace('\n', '')
 			}
