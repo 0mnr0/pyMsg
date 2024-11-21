@@ -161,7 +161,7 @@ function createMessageInChat(dat, afterISended){
 					msg.style.marginTop='0px'
 					fetchData('/removeMessage', 'POST', {msgId: dat.id, user_id: localStorage.getItem('authName'+authVersion)}).then(res=>{
 						msg.setAttribute('donttouch', true)
-						msg.style='opacity: 0; margin-top: -'+(msg.clientHeight+14)+'px; scale: 0.95; z-index: 1;'
+						msg.style='opacity: 0; margin-top: -'+(msg.clientHeight+15)+'px; scale: 0.95; z-index: 1;'
 						setTimeout(function(){msg.remove()}, 600)
 					})
 				}
