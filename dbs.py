@@ -18,7 +18,15 @@ def listUsers():
 
 
 def removemessage(id):
-    db.messages.delete_one({"id": id})
+    deletingMsg = db.messages.find_one({"id": id})
+    #add deleted tag to it
+    deletingMsg["deleted"] = True
+    deletingMsg["message"] = None
+    deletingMsg["timestamp"] = None
+    deletingMsg["fulltimestamp"] = None
+    deletingMsg["user_id"] = None
+    db.messages.replace_one({"id": id}, deletingMsg)
+
 
 def remove_collection(db, collection_name, confirm=False):
     if confirm:
@@ -38,9 +46,16 @@ def isRegistered(user_id):
             return True
     return False
 
+def verifyUser(user_id, password):
+    data = get_all(db, "users")
+    for doc in data:
+        if doc["user_id"] == user_id and doc["password"] == password:
+            return True
+    return False
+
 #RegisteringUser
-def regUser(userName):
-    data = {"user_id": userName}
+def regUser(userName, userPassword):
+    data = {"user_id": userName, "password": userPassword}
     insert_document(db, collection_name="users", data=data)
 
 

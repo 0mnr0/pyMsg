@@ -47,6 +47,10 @@ def isUserExists():
 def userRegister():
     data = request.get_json()
     userName = data['name']
+    userPassword = data.get('pass')
+    if (type(userPassword) != str) or len(userPassword) < 4:
+        abort(400, "Password must be at least 4 characters long")
+
     if isRegistered(userName):
         return {"status": "User already exists"}, 400
 
@@ -54,7 +58,7 @@ def userRegister():
     data = {"user_id": -1, "message": f"Пользователь {userName} зарегистрировался в чате !", "timestamp": datetime.now().strftime("%H:%M:%S"),
             'fulltimestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "id": id, "ChatUsersList": userName}
     insert_document(db, collection_name="messages", data=data)
-    regUser(userName)
+    regUser(userName, userPassword)
     return {"status": "OK"}
 
 @app.route('/send', methods=['POST'])
@@ -65,7 +69,9 @@ def send():
     user_id = data['user_id']
     print(f"request.remote_addr ({user_id}):", request.remote_addr)
     message = data['message']
-    print(f"request.remote_addr msg: {message} ({user_id}):")
+    userPass = data.get('pass')
+    if not verifyUser(user_id, userPass):
+        return {"status": "Unauthorized"}, 401
 
     retDat = send_message(user_id, message, datetime.now().strftime("%H:%M:%S"))
     retDat['_id'] = None
@@ -76,18 +82,17 @@ def send():
 
 def refreshMsgs():
     global dictOfMessages
-    Messages = get_all(db, "messages")
-    finalDict = {}
-    i = 0
-    for message in Messages:
-        finalDict[str(i)] = message
-        finalDict[str(i)]['_id'] = "null"
-        i = i+1
-    finalDict["id"] = appendID(db, True)
-    dictOfMessages = json.dumps(finalDict)
-    time.sleep(1)
-    refreshMsgs()
+    while True:
+        messages = get_all(db, "messages")
+        messages_dict = { str(i): {**msg, "_id": "null"} for i, msg in enumerate(messages) }
+        messages_dict["id"] = appendID(db, True)
+        dictOfMessages = json.dumps(messages_dict)
+
+        time.sleep(0.1)
+
+
 msgRefresh = Thread(target=refreshMsgs)
+msgRefresh.daemon = True
 msgRefresh.start()
 
 

@@ -77,8 +77,7 @@
 		div.chatBox .systemMessage.userMessage .userName { display: none }
 		div.chatBox .systemMessage.userMessage img:not(.deleteMsg) { display: none }
 		div.chatBox .userMessage[donttouch="true"] * { overflow: hidden }
-		div.chatBox .userMessage span.text { overflow: auto; word-break: break-word }
-		div.chatBox .userMessage span.text { overflow: auto; word-break: break-word }
+		div.chatBox .userMessage span.text { overflow: auto; word-break: break-word; white-space: pre}
 		div.chatBox .userMessage span.timestamp{ font-size: 10px; color: gray }
 		div.chatBox .userMessage div.userCreds { display: flex; flex-direction: row-reverse; width: 100%; }
 		div.chatBox .userMessage div.userCreds img { height: 25px; margin-right: 1px; scale: 0.8}
@@ -87,6 +86,7 @@
 		.imWritingMyMessage .sendMsg:hover {scale: 1.5}	
 		.MainTitleInChat {color: transparent; scale: 0.86; transition: all .4s ease; position: fixed; font-size: 196px; z-index: 0;  top: 50%; transform: translate(-45%, -45%); left: 50%; width: 100%; text-align: center}
 		.MainTitleInChat.visible {color: #55555550}
+		.imWritingMyMessage .sendMsg.notPossible {filter: hue-rotate(180deg) contrast(0.25) invert(1); cursor: not-allowed;}
 		
 		.scrollToBottom {background: white; padding: 3px; border-radius: 200px; bottom: 12px; left: 12px; position: absolute; color: black; font-weight: 900; text-align: center; width: 30px; aspect-ratio: 1/1; transition: all .3s; cursor: pointer}
 		span.scrollToBottom.visible {bottom: 55px; z-index: 60;}

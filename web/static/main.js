@@ -16,10 +16,10 @@ let TameImpalaDict = {
 }
 
 function LaunchTame(){
+	if (CanSendMessages === false) {console.warn("Message Cooldown working! Try another time"); return 0}
 	for (let i = 0; i < 14; i++){
-		console.log('caled wait:', (3850*i)+TameImpalaDict[i].time*1000)
 			setTimeout(function(){
-			fetchData('/send', 'POST', {user_id: localStorage.getItem('authName'+authVersion), message: TameImpalaDict[i].text}).then(res=> {
+			fetchData('/send', 'POST', {user_id: localStorage.getItem('authName'+authVersion), message: TameImpalaDict[i].text, pass: localStorage.getItem('password'+authVersion)}).then(res=> {
 				fetchData('/getMessages','GET').then(evData => {
 					refreshWithChatMessages(evData)
 				})
@@ -74,17 +74,26 @@ window.onload = function() {
 	
 }
 
-function refreshWithChatMessages(json){
-	let LastPossibleMessage = json.id;
-	document.querySelector('div.chatBox span.chatTitle').textContent = 'Чат ('+(document.querySelectorAll('div.chatBox .userMessage').length)+'): '
-	for (let i = 0; i<Object.keys(json).length - 1; i++) {
-		let dat = json[i];
+
+function createMessageInChat(dat, afterISended){
+		if (afterISended) {
+			CanSendMessages = false;
+			let sendMsgButton = document.querySelector('.imWritingMyMessage .sendMsg');
+			sendMsgButton.classList.add('notPossible');
+			setTimeout(function(){
+				CanSendMessages = true;
+				sendMsgButton.classList.remove('notPossible');
+			}, 1000)
+		}
 		let msg = document.createElement('div');
 		let chat = document.getElementById('chat')
 		msg.setAttribute('msgId', dat.id)
 		msg.id = 'userMessage'+(dat.id)
 		if (document.getElementById('userMessage'+dat.id) !== null) {
-			continue
+			return
+		}
+		if (dat.deleted === true) {
+			return
 		}
 		
 		if (dat.user_id === -1) {
@@ -100,9 +109,12 @@ function refreshWithChatMessages(json){
 				remoteConfig=JSON.parse(dat.message)
 				if (remoteConfig.realtimeMessageDeleteDetection !== null) {
 					RmDD = remoteConfig.realtimeMessageDeleteDetection
-					console.warn("RmDD:", RmDD)
 				}
-				continue
+				remoteConfig=JSON.parse(dat.message)
+				if (remoteConfig.displayAsInnerHTML !== null) {
+					ASInner = remoteConfig.displayAsInnerHTML
+				}
+				return
 			}
 		} catch(e) {}
 		
@@ -128,8 +140,11 @@ function refreshWithChatMessages(json){
 			`
 		}
 		
-	
-		msg.querySelector('span.text').textContent = dat.message
+		if (ASInner){ 
+			msg.querySelector('span.text').innerHTML = dat.message
+		} else {
+			msg.querySelector('span.text').textContent = dat.message
+		}
 		msg.style='scale: 0.86; opacity: 0'
 		if (isScrolledToBottom(chat)) {
 			chat.appendChild(msg)
@@ -153,28 +168,15 @@ function refreshWithChatMessages(json){
 			})
 		}
 		setTimeout(function(){msg.style='';}, 10)
-		
-	}
-	
-	let allIds = [];
-	let messagesInChat = [];
-	for (let i=0; i < LastPossibleMessage-1; i++){
-		if (json[i] !== undefined){
-			allIds.push(json[i]['id'])
-		}
-	}
-	
-	let lenOfMessages = document.querySelectorAll('div.chatBox .userMessage');
-	
-	
-	if (RmDD) {
-		document.querySelectorAll('div.chatBox .userMessage').forEach(msg => {
-			if (!allIds.includes(Number(msg.getAttribute('msgId')))) {
-				if (msg.getAttribute('donttouch') !== 'true') {
-					msg.remove()
-				}
-			}
-		})
+}
+
+function refreshWithChatMessages(json, afterISended){
+	let LastPossibleMessage = json.id;
+	document.querySelector('div.chatBox span.chatTitle').textContent = 'Чат ('+(document.querySelectorAll('div.chatBox .userMessage').length)+'): ';
+	let totalMsgCount = Object.keys(json).length - 1;
+	for (let i = 0; i<totalMsgCount; i++) {
+		let dat = json[i];
+		createMessageInChat(dat, afterISended)
 	}
 	
 }
@@ -185,6 +187,19 @@ async function fetchStream() {
 	fetchData('/getMessages', 'GET').then(res => {
 		if (localStorage.getItem('authName'+authVersion) === null) {return}
 		refreshWithChatMessages(res)
+		for (let msgNumber in res) {
+			let msg = res[msgNumber];
+			let removedMessageDiv = document.getElementById('userMessage'+msg.id);
+			if (msg.deleted === true && removedMessageDiv) {
+				removedMessageDiv.style=''
+				
+				setTimeout(function(){
+					removedMessageDiv.setAttribute('donttouch', true)
+					removedMessageDiv.style='opacity: 0; margin-top: -'+(removedMessageDiv.clientHeight+14 / 2)+'px; scale: 0.95; z-index: 1;'
+					setTimeout(function(){removedMessageDiv.remove()}, 600)
+				}, 10)
+			}
+		}
 		setTimeout(fetchStream, 1000)
 	})	
 }
