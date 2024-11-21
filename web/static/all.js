@@ -26,6 +26,26 @@ function scrollToBottom(){
 	}
 }
 
+function openFilePreview(src, video) {
+	document.querySelectorAll('.BigPreview').forEach(preview => {
+		preview.remove()
+	})
+	
+	let fp = document.createElement('div')
+	fp.className = 'BigPreview'
+	fp.innerHTML = `
+	<img class="BigGilePreview" src="`+src+`" onerror="this.style.display='none' onload="this.style.display='block'">
+	`;
+	
+	if (video === true) {
+		fp.innerHTML = `
+			<video controls class="BigGilePreview" src="`+src+`" onerror="this.style.display='none' onload="this.style.display='block'">
+		`
+	}
+	document.body.appendChild(fp)
+	
+}
+
 setInterval(scrollToBottom, 100)
 
 function removeLoadedEffect(element) {

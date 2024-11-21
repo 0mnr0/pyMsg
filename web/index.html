@@ -78,7 +78,7 @@
 		div.chatBox .systemMessage.userMessage img:not(.deleteMsg) { display: none }
 		div.chatBox .userMessage[donttouch="true"] * { overflow: hidden }
 		div.chatBox .userMessage span.text { overflow: auto; word-break: break-word; white-space: pre; width: min-content}
-		div.chatBox .userMessage span.timestamp{ font-size: 10px; color: gray; width: min-content.filePreviewer}
+		div.chatBox .userMessage span.timestamp{ font-size: 10px; color: gray; width: min-content}
 		div.chatBox .userMessage div.userCreds { display: flex; }
 		div.chatBox .userMessage div.userCreds img { height: 25px; margin-right: 1px; scale: 0.8}
 		.imWritingMyMessage {width: 100%; position: relative; display: flex; bottom: 6px}
@@ -97,7 +97,11 @@
 		.FileChoose.visible {display: flex;}
 		.FileChoose img {max-width: 16px; aspect-ratio; height: 100%; cursor: pointer}
 		
-		.filePreviewer {width: 440px; border-radius: 8px}
+		.filePreviewer {width: 440px; border-radius: 8px; max-height: 220px; object-fit: cover}
+		
+		
+		.BigPreview {position: fixed; background: #0707076b; border-radius: 10px; z-index: 100; width: 100%; top: 0px; height: 100%;}
+		.BigPreview .BigGilePreview {left: 50%; top: 50%; transform: translate(-50%, -50%); position: relative; height: 90%; max-width: 80%; object-fit: cover; border-radius: 20px;}
 	</style>
 	<script src="static/all.js"></script>
 	<script src="static/main.js"></script>
