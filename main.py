@@ -51,7 +51,8 @@ def isUserExists():
     user_id = data['name']
     return {'isRegistered': isRegistered(user_id), 'name': user_id}
 
-@app.route("/userRegister", methods=["POST"])
+@app.route("/"
+           "", methods=["POST"])
 def userRegister():
     data = request.get_json()
     userName = data['name']

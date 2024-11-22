@@ -1,4 +1,7 @@
 
+
+
+
 let FileInput = null;
 let TameImpalaDict = {
 	0: {text: "I cannot vanish, you will now scare me", time: 3.85},
@@ -33,7 +36,9 @@ function LaunchTame(){
 
 
 function addUserToListOfUsers(username){
+	try{
 	if (document.querySelector('.userDiv[name="'+username+'"]') !== null) {return}
+	} catch(e) {console.warn(e)}
 	let UserDiv = document.createElement('div')
 	UserDiv.className='userDiv'
 	UserDiv.setAttribute('name', username)
@@ -45,6 +50,10 @@ function addUserToListOfUsers(username){
 }
 
 window.onload = function() {
+	if (navigator.userAgent.includes('OPR')) {
+	    document.body.classList.add('is-opera');
+	}
+	
 	if (localStorage.getItem('authName'+authVersion) === null) {
 		window.location.href = ((window.location.href).replaceAll('.html', ''))+'/reg'
 	}
@@ -201,7 +210,7 @@ function createMessageInChat(dat, afterISended){
 					msg.style.marginTop='0px'
 					fetchData('/removeMessage', 'POST', {msgId: dat.id, user_id: localStorage.getItem('authName'+authVersion)}).then(res=>{
 						msg.setAttribute('donttouch', true)
-						msg.style='opacity: 0; margin-top: -'+(msg.clientHeight+15)+'px; scale: 0.95; z-index: 1;'
+						msg.style='opacity: 0; margin-top: -'+(msg.offsetHeight+10)+'px; scale: 0.95; z-index: 1;'
 						setTimeout(function(){msg.remove()}, 600)
 					})
 				}
@@ -247,11 +256,14 @@ async function fetchStream() {
 				
 				setTimeout(function(){
 					removedMessageDiv.setAttribute('donttouch', true)
-					removedMessageDiv.style='opacity: 0; margin-top: -'+(removedMessageDiv.clientHeight+14 / 2)+'px; scale: 0.95; z-index: 1;'
+					removedMessageDiv.style='opacity: 0; margin-top: -'+(removedMessageDiv.offsetHeight+10)+'px; scale: 0.95; z-index: 1;'
 					setTimeout(function(){removedMessageDiv.remove()}, 600)
 				}, 10)
 			}
 		}
-		setTimeout(fetchStream, 1000)
+		setTimeout(fetchStream, 1000);
+		if (navigator.userAgent.includes('OPR')) {
+			document.body.classList.add('is-opera');
+		}
 	})	
 }

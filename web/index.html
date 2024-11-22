@@ -66,10 +66,12 @@
 		div.chatBox {position: relative; width: 80%; padding: 10px; background: #22222290; border-radius:0px 25px 25px 0px; height: 100%; width: 80%; margin-left: 3px;}
 		div.chatBox span.chatTitle, span.chatTitleUsers {text-align: center; width: 100%; display: block; text-align: center; margin-bottom: 5px; border-bottom: solid 1px gray; overflow: hidden}
 		div.chatBox .UserList {width: 20%}
-		div.chatBox #chat { height: calc(100% - 72px); display: flex; flex-direction: column; width: 100%; gap: 10px; overflow: auto; padding: 3px; margin-bottom: 10px}
+		div.chatBox #chat { z-index: 0; position: relative; height: calc(100% - 72px); display: flex; flex-direction: column; width: 100%; gap: 10px; overflow: auto; padding: 3px; margin-bottom: 10px}
 		div.chatBox #myMessage {z-index: 61; outline: none; border: solid 2px white; padding: 5px; border-radius: 25px; width: 100%; color: white; background: #222222; padding-right: 50px; resize: none; height: 38px; padding-left: 40px}
 		div.chatBox .userMessage { z-index: 50; width: 100%; transition: all .5s cubic-bezier(0, 0.36, 0.25, 1); max-width: 80%; position: relative;  background: #111111; padding: 5px; border-radius: 15px 15px 15px 5px; display: flex; flex-direction: column; border: solid 2px #555; width: fit-content; min-width: 160px}
-		div.chatBox .userMessage.myMessage { direction: rtl; float: right; margin-left: auto; text-align: right; width: fit-content; border-radius: 15px 15px 3px 15px; padding: 0px 10px}
+		
+		body:not(.is-opera) div.chatBox .userMessage.myMessage { direction: rtl; }
+		div.chatBox .userMessage.myMessage { float: right; margin-left: auto; text-align: right; width: fit-content; border-radius: 15px 15px 3px 15px; padding: 0px 10px }
 		div.chatBox .userMessage img.deleteMsg { display: none; width: 16px; position: absolute; bottom: 5px; right: 5px; z-index: 51; cursor: pointer; transition: all .2s; border-radius: 200px; }
 		div.chatBox .userMessage img.deleteMsg:hover {scale: 1.05}
 		div.chatBox .userMessage.myMessage img.deleteMsg { display: block; right: auto; left: 5px}
@@ -87,6 +89,8 @@
 		.MainTitleInChat {color: transparent; scale: 0.86; transition: all .4s ease; position: fixed; font-size: 196px; z-index: 0;  top: 50%; transform: translate(-45%, -45%); left: 50%; width: 100%; text-align: center}
 		.MainTitleInChat.visible {color: #55555550}
 		.imWritingMyMessage .sendMsg.notPossible {filter: hue-rotate(180deg) contrast(0.25) invert(1); cursor: not-allowed;}
+		
+		body.is-opera div.chatBox .userMessage.myMessage div.userCreds {flex-direction: row-reverse;}
 				
 		.scrollToBottom {background: white; padding: 3px; border-radius: 200px; bottom: 12px; left: 12px; position: absolute; color: black; font-weight: 900; text-align: center; width: 30px; aspect-ratio: 1/1; transition: all .3s; cursor: pointer}
 		span.scrollToBottom.visible {bottom: 55px; z-index: 60;}
@@ -100,11 +104,11 @@
 		
 		body.inFilePreview .logoutDiv img.logout {opacity: 0.3}
 		
-		.filePreviewer {width: 440px; border-radius: 8px; max-height: 220px; object-fit: cover}
+		.filePreviewer {max-width: 740px; border-radius: 8px; max-height: 220px; object-fit: cover; }
 		
 		
 		.BigPreview {position: fixed; background: #0707076b; border-radius: 10px; z-index: 100; width: 100%; top: 0px; height: 100%; transition: all .2s}
-		.BigPreview .BigGilePreview {left: 50%; top: 50%; transform: translate(-50%, -50%); position: relative; height: fit-content; max-width: 80%; object-fit: contain; border-radius: 16px;}
+		.BigPreview .BigGilePreview {left: 50%; top: 50%; transform: translate(-50%, -50%); position: relative; height: fit-content; max-width: 80%; object-fit: contain; border-radius: 16px; max-height: 96%}
 		
 		
 		.noselect {
@@ -139,7 +143,8 @@
 					
 				</div>
 				<span class="chatTitle"> Чат: </span>
-				<div id="chat"><span class="MainTitleInChat">PyMsg</span></div>
+				<span class="MainTitleInChat">PyMsg</span>
+				<div id="chat"></div>
 				<span class="scrollToBottom">↓</span>
 				<input type="file" class="fileInput">
 				<div class="imWritingMyMessage">
