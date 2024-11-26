@@ -127,7 +127,8 @@ function MainPageLoaded() {
 			if (CanSendMessages === true) {
 				if (selectedFile !== null) {
 					fetchDataWithFormAndJson('/send', 'POST', {file: selectedFile}, {user_id: localStorage.getItem('authName'+authVersion), message: msg, pass: localStorage.getItem('password'+authVersion)}).then(res=>{
-						createMessageInChat(res, true)
+						createMessageInChat(res, true);
+						element.value = '';
 					})
 					selectedFile = null;
 					ClearAttachedFiles();

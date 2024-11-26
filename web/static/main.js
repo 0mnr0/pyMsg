@@ -168,7 +168,12 @@ function createMessageInChat(dat, afterISended){
 		let totalInner = `
 			<div class="userCreds"> <span class="userName">${dat.user_id}</span> <img src="https://ionoto.ru/upload/medialibrary/a1f/tcs61nk83dig738gik8qtkcx6ue7sgek.png"></div>`
 			if (dat.attachment !== null && dat.attachment !== undefined) {
-				totalInner+=`<img class="filePreviewer" style="display: none" onload="this.style.display='block'" onerror="this.style.display='none'" src="`+baseUrl+`/`+dat.attachment+`">
+				let attachmentName = dat.attachment.split("\\") [dat.attachment.split("\\").length-1]
+				totalInner+=`
+				<span class="DownloadAttachment">
+					<img class="fileDownload" src="https://cdn-icons-png.flaticon.com/512/2381/2381981.png" onclick="window.open('`+baseUrl+`/`+(dat.attachment.replaceAll("\\", "/"))+`')">
+					`+attachmentName+`</span>
+				<img class="filePreviewer" style="display: none" onload="this.style.display='block'" onerror="this.style.display='none'" src="`+baseUrl+`/`+dat.attachment+`">
 				<video controls class="filePreviewer" style="" onloadeddata="this.style.display='block'" onerror="this.style.display='none'" src="`+baseUrl+`/`+dat.attachment+`"> </video>`
 			}
 			if (dat.message.length > 0) { totalInner+=`<span class="text"></span>` }
