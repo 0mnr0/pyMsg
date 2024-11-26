@@ -55,21 +55,24 @@
 		body {background: #111111; color: white; transition: all .2s}
 		.pingBar {border-radius: 5px; width: 12px; height: 12px; background: red; top: 10px; left: 10px; position: absolute; transition: all .3s}
 		.pingBar.sucsess {background: green}
-		div.MainContent {display: flex; top: 60px; position: relative; height: calc(100% - 60px); padding: 20px; padding-top: 0px}
-		div.MainContent .UserList {width: 20%; background: #22222290; border-radius: 25px 0px 0px 25px; padding: 10px; display: flex; flex-direction: column; gap: 10px}
+		div.MainContent {border: none !important; display: flex; top: 60px; position: relative; height: calc(100% - 60px); padding: 20px; padding-top: 0px}
+		div.MainContent .UserList {width: 20%; background: #22222290; border-radius: 25px 0px 0px 25px; padding: 10px; display: flex; flex-direction: column; gap: 10px; transition: all .4s ease}
 		span.PyMsgTitle {position: fixed; color: white; font-size: 24px; top: 10px; left: 16px}
 		.logoutDiv {display: flex; position: fixed; top: 10px; right: 10px}
 		.logoutDiv img.logout {height: 30px; background: white; cursor: pointer; border-radius: 200px; padding: 4px}
 		.userDiv {max-height: 50px; background: #111; border-radius: 200px; display: flex;}
 		.userDiv img.UserImage {height: 40px}
 		.userDiv span {top: 7px; width: 100%; left: 5px; font-size: 18px; position: relative; display: block}
-		div.chatBox {position: relative; width: 80%; padding: 10px; background: #22222290; border-radius:0px 25px 25px 0px; height: 100%; width: 80%; margin-left: 3px;}
-		div.chatBox span.chatTitle, span.chatTitleUsers {text-align: center; width: 100%; display: block; text-align: center; margin-bottom: 5px; border-bottom: solid 1px gray; overflow: hidden}
+		div.chatBox {transition: all .4s; position: relative; width: 80%; padding: 10px; background: #22222290; border-radius:0px 25px 25px 0px; height: 100%; width: 80%; margin-left: 3px;}
+		div.chatBox span.chatTitle {min-height: 43px; display: flex; align-items: center; text-align: center; border-bottom: dashed 1px gray; justify-content: center;}
+		div.chatBox span.chatTitle, span.chatTitleUsers {text-align: center; width: 100%; text-align: center; overflow: hidden}
 		div.chatBox .UserList {width: 20%}
-		div.chatBox #chat { z-index: 0; position: relative; height: calc(100% - 72px); display: flex; flex-direction: column; width: 100%; gap: 10px; overflow: auto; padding: 3px; margin-bottom: 10px}
+		div.chatBox #chat { z-index: 0; position: relative; margin-top: 2px;  height: calc(100% - 88px); display: flex; flex-direction: column; width: 100%; gap: 10px; overflow: auto; padding: 3px; margin-bottom: 10px}
 		div.chatBox #myMessage {z-index: 61; outline: none; border: solid 2px white; padding: 5px; border-radius: 25px; width: 100%; color: white; background: #222222; padding-right: 50px; resize: none; height: 38px; padding-left: 40px}
 		div.chatBox .userMessage { z-index: 50; width: 100%; transition: all .5s cubic-bezier(0, 0.36, 0.25, 1); max-width: 80%; position: relative;  background: #111111; padding: 5px; border-radius: 15px 15px 15px 5px; display: flex; flex-direction: column; border: solid 2px #555; width: fit-content; min-width: 160px}
 		
+		
+		.attachmentBlock {border-radius: 12px; background: #090909; padding: 5px}
 		body:not(.is-opera) div.chatBox .userMessage.myMessage { direction: rtl; }
 		div.chatBox .userMessage.myMessage { float: right; margin-left: auto; text-align: right; width: fit-content; border-radius: 15px 15px 3px 15px; padding: 0px 10px }
 		div.chatBox .userMessage img.deleteMsg { display: none; width: 16px; position: absolute; bottom: 5px; right: 5px; z-index: 51; cursor: pointer; transition: all .2s; border-radius: 200px; }
@@ -81,7 +84,7 @@
 		div.chatBox .userMessage[donttouch="true"] * { overflow: hidden }
 		div.chatBox .userMessage span.text { overflow: auto; word-break: break-word; white-space: pre; width: min-content}
 		div.chatBox .userMessage span.timestamp{ font-size: 10px; color: gray; width: min-content}
-		div.chatBox .userMessage div.userCreds { display: flex; }
+		div.chatBox .userMessage div.userCreds { display: flex; margin-top: 3px }
 		div.chatBox .userMessage div.userCreds img { height: 25px; margin-right: 1px; scale: 0.8}
 		.imWritingMyMessage {width: 100%; position: relative; display: flex; bottom: 6px}
 		.imWritingMyMessage .sendMsg {z-index: 61; height: 83%; aspect-ratio: 1/1; position: absolute; right: 3px; top: 9%; background: black; filter: invert(1); border-radius: 200px; transition: all .3s ease-out; cursor: pointer}
@@ -92,11 +95,17 @@
 		
 		body.is-opera div.chatBox .userMessage.myMessage div.userCreds {flex-direction: row-reverse;}
 				
-		.scrollToBottom {background: white; padding: 3px; border-radius: 200px; bottom: 12px; left: 12px; position: absolute; color: black; font-weight: 900; text-align: center; width: 30px; aspect-ratio: 1/1; transition: all .3s; cursor: pointer}
-		span.scrollToBottom.visible {bottom: 55px; z-index: 60;}
+		.scrollToBottom {background: white; opacity: 0; padding: 3px; border-radius: 200px; bottom: 12px; left: 12px; position: absolute; color: black; font-weight: 900; text-align: center; width: 30px; aspect-ratio: 1/1; transition: all .3s; cursor: pointer}
+		span.scrollToBottom.visible {bottom: 55px; z-index: 60; opacity: 1}
+		div.MainContent .UserList.hidden {width: 0%; padding: 0px; overflow: hidden}
+		
 		
 		img.uploadFile {position: absolute; z-index: 63; height: calc(100% - 10px); margin: 5px 5px 5px 5px; border-radius: 100px; background: black; padding: 3px; cursor: pointer; min-width: 28px; max-width: 28px; transition: all .3s}
 		img.uploadFile:hover {scale: 1.4}
+		.userMessage {display: none}
+		.userMessage:nth-last-child(-n+500) {
+			display: block; /* Показываем последние 500 */
+		}
 		.fileInput {display: none}
 		.FileChoose {display: flex; display: none; position: absolute; bottom: 45px; gap: 10px; scale: 0.85; z-index: 90}
 		.FileChoose.visible {display: flex;}
@@ -104,14 +113,15 @@
 		
 		body.inFilePreview .logoutDiv img.logout {opacity: 0.3}
 		
-		.filePreviewer {max-width: 740px; border-radius: 8px; max-height: 220px; object-fit: cover; }
+		.filePreviewer {max-width: 740px; border-radius: 8px; max-height: 220px; object-fit: cover; cursor: pointer }
 		
 		span.DownloadAttachment {max-height: 30px; display: flex; flex-direction: row-reverse; align-items: center; gap: 0px 10px; justify-content: flex-end}
 		span.DownloadAttachment img.fileDownload {max-height: 30px; scale: 0.75; cursor: pointer}
 		.BigPreview {position: fixed; background: #0707076b; border-radius: 10px; z-index: 100; width: 100%; top: 0px; height: 100%; transition: all .2s}
 		.BigPreview .BigGilePreview {left: 50%; top: 50%; transform: translate(-50%, -50%); position: relative; height: fit-content; max-width: 80%; object-fit: contain; border-radius: 16px; max-height: 96%}
-		
-		
+		div.MainContent .UserList div.chatBox span.chatTitle, div.MainContent .UserList span.chatTitleUsers, div.MainContent .UserList .userDiv, div.MainContent .UserList .userDiv * {transition: all .3s}
+		div.MainContent .UserList {overflow: hidden; overflow-y: auto}
+		div.MainContent .UserList span.chatTitleUsers {transition: all .3s; padding-left: 40px}
 		.noselect {
 		  -webkit-touch-callout: none; /* iOS Safari */
 			-webkit-user-select: none; /* Safari */
@@ -121,6 +131,14 @@
 					user-select: none; /* Non-prefixed version, currently
 										  supported by Chrome, Edge, Opera and Firefox */
 		}
+		
+		button.MinimizeMenu {opacity: 1 !important; z-index: 2; position: absolute; border: solid 2px white; background: #444; color: white; border-radius: 15px; padding: 3px; width: 36px; height: 36px; aspect-ratio: 1/1; transition: all .3s}
+		button.MinimizeMenu.abs {z-index: 2; position: absolute; margin: 17px 0px 0px 10px; rotate: 90deg}
+		div.MainContent .UserList .topLine {display: flex;  border-bottom: solid 1px gray; align-items: center; padding-bottom: 5px; min-height: 43px}
+		div.MainContent .UserList.hidden .topLine {border-bottom: solid 1px transparent;}
+		div.MainContent .UserList.hidden {background: transparent;}
+		div.MainContent .UserList.hidden div.chatBox span.chatTitle, div.MainContent .UserList.hidden span.chatTitleUsers, div.MainContent .UserList.hidden .userDiv, div.MainContent .UserList.hidden .userDiv * {opacity: 0}
+		div.chatBox.fullyRound {width: 100%; border-radius: 25px; margin-left: 0px}
 	</style>
 	<script src="static/all.js"></script>
 	<script src="static/main.js"></script>
@@ -136,7 +154,12 @@
 	
 	
 	<div class="MainContent noselect">
-		<div class="UserList"><span class="chatTitleUsers"> Участники: </span></div>
+		<div class="UserList">
+			<div class="topLine">
+				<button class="MinimizeMenu"> ||| </button>
+				<span class="chatTitleUsers"> Участники: </span>
+			</div>
+		</div>
 		<div class="chatBox">
 				<div class="FileChoose">
 					<span class="FileNamePreview"></span>
