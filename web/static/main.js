@@ -54,6 +54,21 @@ window.onload = function() {
 	    document.body.classList.add('is-opera');
 	}
 	
+	let LeftMenuButton = document.querySelector('.MinimizeMenu')
+	let MainChatBox = document.querySelector('div.chatBox')
+	LeftMenuButton.addEventListener('click', function(){
+		let UserList = document.querySelector('div.MainContent .UserList')
+		if (UserList.classList.contains('hidden')) {
+			UserList.classList.remove('hidden');
+			LeftMenuButton.classList.remove('abs');
+			MainChatBox.classList.remove('fullyRound');
+		} else {
+			UserList.classList.add('hidden');
+			LeftMenuButton.classList.add('abs')
+			MainChatBox.classList.add('fullyRound')
+		}
+	})
+	
 	if (localStorage.getItem('authName'+authVersion) === null) {
 		window.location.href = ((window.location.href).replaceAll('.html', ''))+'/reg'
 	}
@@ -170,11 +185,13 @@ function createMessageInChat(dat, afterISended){
 			if (dat.attachment !== null && dat.attachment !== undefined) {
 				let attachmentName = dat.attachment.split("\\") [dat.attachment.split("\\").length-1]
 				totalInner+=`
-				<span class="DownloadAttachment">
-					<img class="fileDownload" src="https://cdn-icons-png.flaticon.com/512/2381/2381981.png" onclick="window.open('`+baseUrl+`/`+(dat.attachment.replaceAll("\\", "/"))+`')">
-					`+attachmentName+`</span>
-				<img class="filePreviewer" style="display: none" onload="this.style.display='block'" onerror="this.style.display='none'" src="`+baseUrl+`/`+dat.attachment+`">
-				<video controls class="filePreviewer" style="" onloadeddata="this.style.display='block'" onerror="this.style.display='none'" src="`+baseUrl+`/`+dat.attachment+`"> </video>`
+				<div class="attachmentBlock">
+					<span class="DownloadAttachment">
+						<img class="fileDownload" title="`+attachmentName+`" src="https://cdn-icons-png.flaticon.com/512/2381/2381981.png" onclick="window.open('`+baseUrl+`/`+(dat.attachment.replaceAll("\\", "/"))+`')">
+						Скачать вложение </span>
+					<img class="filePreviewer" style="display: none" onload="this.style.display='block'" onerror="this.style.display='none'" src="`+baseUrl+`/`+dat.attachment+`">
+					<video controls class="filePreviewer" style="" onloadeddata="this.style.display='block'" onerror="this.style.display='none'" src="`+baseUrl+`/`+dat.attachment+`"> </video>
+				</div>`
 			}
 			if (dat.message.length > 0) { totalInner+=`<span class="text"></span>` }
 			totalInner+=`<span class="timestamp">${dat.timestamp}</span>
@@ -233,14 +250,22 @@ function createMessageInChat(dat, afterISended){
 			})
 		})
 
-		setTimeout(function(){msg.style='';}, 10)
+		setTimeout(function(){msg.style='';}, 10);
+			
+		const messages = Array.from(chat.querySelectorAll('.userMessage'));
+		const maxMessages = 500;
+		if (messages.length > maxMessages) {
+			const excessMessages = messages.slice(0, messages.length - maxMessages);
+			excessMessages.forEach(msg => msg.remove());
+		}
 }
 
 function refreshWithChatMessages(json, afterISended){
 	let LastPossibleMessage = json.id;
 	document.querySelector('div.chatBox span.chatTitle').textContent = 'Чат ('+(document.querySelectorAll('div.chatBox .userMessage').length)+'): ';
+	let startmsgCount = Number(Object.keys(json)[0]);
 	let totalMsgCount = Object.keys(json).length - 1;
-	for (let i = 0; i<totalMsgCount; i++) {
+	for (let i = startmsgCount; i<startmsgCount+totalMsgCount; i++) {
 		let dat = json[i];
 		createMessageInChat(dat, afterISended)
 	}

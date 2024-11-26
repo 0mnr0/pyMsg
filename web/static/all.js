@@ -1,6 +1,6 @@
 
-const baseUrl = 'http://192.168.12.26:8970';
-const authVersion = 'v3';
+const baseUrl = 'http://192.168.0.10:8970';
+const authVersion = 'v4';
 var CanSendMessages = true;
 var selectedFile = null;
 
