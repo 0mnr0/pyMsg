@@ -1,5 +1,5 @@
 
-const baseUrl = 'http://192.168.31.35:8970';
+const baseUrl = 'https://chat.jprq.site';
 const authVersion = 'v2.1';
 var CanSendMessages = true;
 var selectedFile = null;
