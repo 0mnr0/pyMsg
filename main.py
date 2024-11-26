@@ -1,3 +1,4 @@
+from itertools import islice
 import time
 from threading import Thread
 
@@ -96,6 +97,7 @@ def send():
         retDat = send_message(user_id, message, datetime.now().strftime("%H:%M:%S"), 'uploads\\'+file.filename)
         retDat['_id'] = None
 
+        time.sleep(0.5)
         return retDat
 
     else:
@@ -109,7 +111,7 @@ def send():
 
         retDat = send_message(user_id, message, datetime.now().strftime("%H:%M:%S"))
         retDat['_id'] = None
-
+        time.sleep(0.5)
         return retDat
 
 
@@ -118,10 +120,14 @@ def refreshMsgs():
     global dictOfMessages
     while True:
         messages = get_all(db, "messages")
-        messages_dict = { str(i): {**msg, "_id": "null"} for i, msg in enumerate(messages) }
-        messages_dict["id"] = appendID(db, True)
-        dictOfMessages = json.dumps(messages_dict)
+        messages_dict = {str(i): {**{k: v for k, v in msg.items() if k != "_id"}} for i, msg in enumerate(messages)}
 
+
+        messages_dict["id"] = appendID(db, True)
+        #get last 100 messages
+        messages_dict = dict(islice(messages_dict.items(), len(messages_dict) - 500, None))
+        messages_dict.pop('id', None)
+        dictOfMessages = json.dumps(messages_dict)
         time.sleep(0.1)
 
 
