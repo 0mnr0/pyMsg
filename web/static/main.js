@@ -1,4 +1,5 @@
-
+let deletedMsgs = [];
+let canUpdateMessages = true;	
 
 
 
@@ -141,7 +142,8 @@ function createMessageInChat(dat, afterISended){
 			}, 1000)
 		}
 		let msg = document.createElement('div');
-		let chat = document.getElementById('chat')
+		let chat = document.getElementById('chat');
+		if (deletedMsgs.indexOf(dat.id) != -1) {return}
 		msg.setAttribute('msgId', dat.id)
 		msg.id = 'userMessage'+(dat.id)
 		if (document.getElementById('userMessage'+dat.id) !== null) {
@@ -216,7 +218,7 @@ function createMessageInChat(dat, afterISended){
 				msg.querySelector('span.text').textContent = dat.message
 			}
 		}
-		msg.style='scale: 0.86; opacity: 0;'
+		msg.style='scale: 0.88; opacity: 0.05;'
 		if (isScrolledToBottom(chat)) {
 			chat.appendChild(msg)
 			chat.scrollTo({top: chat.scrollHeight})
@@ -231,6 +233,7 @@ function createMessageInChat(dat, afterISended){
 				if (uc) {
 					msg.style.marginTop='0px'
 					fetchData('/removeMessage', 'POST', {msgId: dat.id, user_id: localStorage.getItem('authName'+authVersion)}).then(res=>{
+						deletedMsgs.push(dat.id)
 						msg.setAttribute('donttouch', true)
 						msg.style='opacity: 0; margin-top: -'+(msg.offsetHeight+10)+'px; scale: 0.95; z-index: 1;'
 						setTimeout(function(){msg.remove()}, 600)
@@ -238,39 +241,50 @@ function createMessageInChat(dat, afterISended){
 				}
 			})
 		}
-		
-		document.querySelectorAll('.filePreviewer').forEach(preview => {
-			preview.addEventListener('click', function(){
-				if (preview.src.indexOf('mp4') != -1 || preview.src.indexOf('mov') != -1) {
-					openFilePreview(preview.src, true)
-				}
-				if (preview.src.indexOf('png') != -1 || preview.src.indexOf('jpg') != -1 || preview.src.indexOf('jpeg') != -1 || preview.src.indexOf('gif') != -1 || preview.src.indexOf('webp') != -1) {
-					openFilePreview(preview.src)
-				}
-			})
-		})
-
-		setTimeout(function(){msg.style='';}, 10);
+		setTimeout(function(){
 			
-		const messages = Array.from(chat.querySelectorAll('.userMessage'));
-		const maxMessages = 500;
-		if (messages.length > maxMessages) {
-			const excessMessages = messages.slice(0, messages.length - maxMessages);
-			excessMessages.forEach(msg => msg.remove());
-		}
+			document.querySelectorAll('.filePreviewer').forEach(preview => {
+				preview.addEventListener('click', function(){
+					if (preview.src.indexOf('mp4') != -1 || preview.src.indexOf('mov') != -1) {
+						openFilePreview(preview.src, true)
+					}
+					if (preview.src.indexOf('png') != -1 || preview.src.indexOf('jpg') != -1 || preview.src.indexOf('jpeg') != -1 || preview.src.indexOf('gif') != -1 || preview.src.indexOf('webp') != -1) {
+						openFilePreview(preview.src)
+					}
+				})
+			})
+
+			setTimeout(function(){msg.style='';}, 10);
+		}, 10)
+}
+function refreshWithChatMessages(json, afterISended) {
+    canUpdateMessages = false;
+    try {
+        let LastPossibleMessage = json.id;
+        let startmsgCount = json[0].id;
+        let totalMsgCount = json.length;
+        let i = 0;
+
+        function processNextMessage() {
+			document.querySelector('div.chatBox span.chatTitle').textContent = 
+				'Чат (' + (document.querySelectorAll('div.chatBox .userMessage').length) + '): ';
+            if (i < totalMsgCount) {
+                let dat = json[i];
+                createMessageInChat(dat, afterISended);
+                i++;
+                requestAnimationFrame(processNextMessage); // Продолжаем обработку в следующем кадре
+            } else {
+                canUpdateMessages = true; // Завершаем обновление
+            }
+        }
+
+        requestAnimationFrame(processNextMessage); // Запускаем процесс
+    } catch (e) {
+        console.warn(e);
+        canUpdateMessages = true;
+    }
 }
 
-function refreshWithChatMessages(json, afterISended){
-	let LastPossibleMessage = json.id;
-	document.querySelector('div.chatBox span.chatTitle').textContent = 'Чат ('+(document.querySelectorAll('div.chatBox .userMessage').length)+'): ';
-	let startmsgCount = Number(Object.keys(json)[0]);
-	let totalMsgCount = Object.keys(json).length - 1;
-	for (let i = startmsgCount; i<startmsgCount+totalMsgCount; i++) {
-		let dat = json[i];
-		createMessageInChat(dat, afterISended)
-	}
-	
-}
 
 let UnSucsessConnextions = 0;
 let ErrorNotificationShowen = false;

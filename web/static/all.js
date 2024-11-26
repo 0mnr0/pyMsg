@@ -1,6 +1,6 @@
 
-const baseUrl = 'http://192.168.0.10:8970';
-const authVersion = 'v4';
+const baseUrl = 'http://192.168.12.26:8970';
+const authVersion = 'v5';
 var CanSendMessages = true;
 var selectedFile = null;
 
@@ -147,7 +147,7 @@ function MainPageLoaded() {
 		
 		let chatBox = document.querySelector('div.chatBox')
 		let chat = chatBox.querySelector('div#chat')
-		let chatInput = chatBox.querySelector('textarea#myMessage')
+		let chatInput = chatBox.querySelector('#myMessage')
 		chatInput.addEventListener('keypress', function(e){
 			if (e.key === "Enter" && !isShiftPressed || e.key === "Enter" && selectedFile != null) {
 				SendMyMessage(chatInput.value, chatInput);

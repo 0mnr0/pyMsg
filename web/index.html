@@ -69,7 +69,7 @@
 		div.chatBox .UserList {width: 20%}
 		div.chatBox #chat { z-index: 0; position: relative; margin-top: 2px;  height: calc(100% - 88px); display: flex; flex-direction: column; width: 100%; gap: 10px; overflow: auto; padding: 3px; margin-bottom: 10px}
 		div.chatBox #myMessage {z-index: 61; outline: none; border: solid 2px white; padding: 5px; border-radius: 25px; width: 100%; color: white; background: #222222; padding-right: 50px; resize: none; height: 38px; padding-left: 40px}
-		div.chatBox .userMessage { z-index: 50; width: 100%; transition: all .5s cubic-bezier(0, 0.36, 0.25, 1); max-width: 80%; position: relative;  background: #111111; padding: 5px; border-radius: 15px 15px 15px 5px; display: flex; flex-direction: column; border: solid 2px #555; width: fit-content; min-width: 160px}
+		div.chatBox .userMessage { max-width: 45%; z-index: 50; width: 100%; transition: all .5s cubic-bezier(0, 0.36, 0.25, 1);  position: relative;  background: #111111; padding: 5px; border-radius: 15px 15px 15px 5px; display: flex; flex-direction: column; border: solid 2px #555; width: fit-content; min-width: 160px}
 		
 		
 		.attachmentBlock {border-radius: 12px; background: #090909; padding: 5px}
@@ -82,7 +82,7 @@
 		div.chatBox .systemMessage.userMessage .userName { display: none }
 		div.chatBox .systemMessage.userMessage img:not(.deleteMsg) { display: none }
 		div.chatBox .userMessage[donttouch="true"] * { overflow: hidden }
-		div.chatBox .userMessage span.text { overflow: auto; word-break: break-word; white-space: pre; width: min-content}
+		div.chatBox .userMessage span.text { width: fit-content}
 		div.chatBox .userMessage span.timestamp{ font-size: 10px; color: gray; width: min-content}
 		div.chatBox .userMessage div.userCreds { display: flex; margin-top: 3px }
 		div.chatBox .userMessage div.userCreds img { height: 25px; margin-right: 1px; scale: 0.8}
@@ -113,7 +113,7 @@
 		
 		body.inFilePreview .logoutDiv img.logout {opacity: 0.3}
 		
-		.filePreviewer {max-width: 740px; border-radius: 8px; max-height: 220px; object-fit: cover; cursor: pointer }
+		.filePreviewer {max-width: 100%; border-radius: 8px; max-height: 220px; object-fit: cover; cursor: pointer }
 		
 		span.DownloadAttachment {max-height: 30px; display: flex; flex-direction: row-reverse; align-items: center; gap: 0px 10px; justify-content: flex-end}
 		span.DownloadAttachment img.fileDownload {max-height: 30px; scale: 0.75; cursor: pointer}
@@ -172,7 +172,7 @@
 				<span class="scrollToBottom">↓</span>
 				<input type="file" class="fileInput">
 				<div class="imWritingMyMessage">
-					<textarea id="myMessage" placeholder="Напишите сообщение"></textarea>
+					<input id="myMessage" placeholder="Напишите сообщение"></textarea>
 					<img class="uploadFile" src="https://cdn-icons-png.flaticon.com/512/9261/9261187.png">
 					<img class="sendMsg" src="data:image/png;base64,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"></img>
 					

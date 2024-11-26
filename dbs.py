@@ -65,7 +65,12 @@ def regUser(userName, userPassword):
 #get all messages
 def get_all(db, collection_name):
     collection = db[collection_name]
-    return list(collection.find())
+    messages = list(collection.find({}, {"_id": 0})
+        .sort("_id", -1)
+        .limit(500)
+    )
+    messages.reverse()
+    return messages
 
 
 def appendID(db, ContinueAfterCreation=False):
