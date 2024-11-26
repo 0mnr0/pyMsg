@@ -1,6 +1,9 @@
 from itertools import islice
 import time
 from threading import Thread
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+
 
 from flask import *
 from flask_cors import CORS
@@ -14,7 +17,13 @@ CORS(app)
 
 PeoplesOnline = []
 dictOfMessages = {}
+deleted_messages = []
 
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["200 per minute"]  # Ограничение по умолчанию: 10 запросов в минуту
+)
 
 @app.route('/uploads/<filename>', methods=['GET'])
 def returnFile(filename):
@@ -24,6 +33,7 @@ def returnFile(filename):
     else:
         return "Файл не найден", 404
 
+@limiter.limit("20 per minute")
 @app.route('/')
 def index():
     if request.remote_addr == "192.168.102.111":
@@ -31,11 +41,13 @@ def index():
     return render_template('index.html')
 
 
+@limiter.limit("5 per minute")
 @app.route('/reg', methods=['GET'])
 def reg():
     #return index.html
     return render_template('registration.html')
 
+@limiter.limit("120 per minute")
 @app.route('/userList', methods=['GET'])
 def userList():
     users = listUsers()
@@ -46,13 +58,17 @@ def userList():
         i+=1
     return finalUsers
 
+
+@limiter.limit("400 per minute")
 @app.route('/isRegistered', methods=['POST'])
 def isUserExists():
     data = request.get_json()
     user_id = data['name']
     return {'isRegistered': isRegistered(user_id), 'name': user_id}
 
+
 @app.route("/userRegister", methods=["POST"])
+@limiter.limit("5 per minute")
 def userRegister():
     data = request.get_json()
     userName = data['name']
@@ -70,6 +86,8 @@ def userRegister():
     regUser(userName, userPassword)
     return {"status": "OK"}
 
+
+@limiter.limit("15 per minute")
 @app.route("/userLogin", methods=["POST"])
 def userLogin():
     data = request.get_json()
@@ -80,6 +98,7 @@ def userLogin():
     return {"status": "OK"}
 
 @app.route('/send', methods=['POST'])
+@limiter.limit("200 per minute")
 def send():
     if request.remote_addr == "192.168.102.111": pass
     if 'file' in request.files:
@@ -89,7 +108,7 @@ def send():
         print(request.form)
         data = json.loads(data)
         user_id = data['user_id']
-        message = data['message']
+        message = str(data['message'])
         userPass = data.get('pass')
         if not verifyUser(user_id, userPass):
             return {"status": "Unauthorized"}, 401
@@ -126,6 +145,7 @@ msgRefresh.start()
 
 
 
+@limiter.limit("400 per minute")
 @app.route('/removeMessage', methods=['POST'])
 def removeMessage():
     data = request.get_json()
@@ -133,6 +153,7 @@ def removeMessage():
     removemessage(id)
     return {'status': "OK"}
 
+@limiter.limit("120 per minute")
 @app.route('/getMessages', methods=['GET'])
 def getMessages():
     return dictOfMessages

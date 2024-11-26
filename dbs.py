@@ -18,15 +18,9 @@ def listUsers():
 
 
 def removemessage(id):
-    deletingMsg = db.messages.find_one({"id": id})
-    #add deleted tag to it
-    deletingMsg["deleted"] = True
-    deletingMsg["message"] = None
-    deletingMsg["timestamp"] = None
-    deletingMsg["fulltimestamp"] = None
-    deletingMsg["user_id"] = None
-    db.messages.replace_one({"id": id}, deletingMsg)
-
+    filter_query = {'id': id}
+    update_query = {'$set': {'deleted': True, 'message': None, 'timestamp': None, 'fulltimestamp': None, 'user_id': None}}
+    db.messages.update_many(filter_query, update_query)
 
 def remove_collection(db, collection_name, confirm=False):
     if confirm:
@@ -67,7 +61,7 @@ def get_all(db, collection_name):
     collection = db[collection_name]
     messages = list(collection.find({}, {"_id": 0})
         .sort("_id", -1)
-        .limit(500)
+        .limit(600)
     )
     messages.reverse()
     return messages
