@@ -1,15 +1,16 @@
 
-const baseUrl = 'http://192.168.12.26:8970';
-const authVersion = 'v5';
+const baseUrl = 'http://192.168.31.35:8970';
+const authVersion = 'v2.1';
 var CanSendMessages = true;
 var selectedFile = null;
+
 
 
 var RmDD = true;
 var ASInner = false;
 
 const isScrolledToBottom = (div) => {
-  return div.scrollHeight - div.scrollTop === div.clientHeight;
+  return div.scrollHeight - div.scrollTop - 10 < div.clientHeight;
 };
 
 document.title = 'PyMsg!'
@@ -92,9 +93,12 @@ function fetchData(url, method, json) {
         })
         .then(response => {
             if (!response.ok) {
-                reject(`Ошибка: ${response.status} ${response.statusText}`);
+				if (response.status === 429) {
+					showToast("Мы заметили что вы отправляете слишком много запросов. Подождите пожалуйста")
+				} 
+                reject(response.status);
             } else {
-                return response.json(); // Преобразуем ответ в JSON
+                return response.json();
             }
         })
         .then(data => resolve(data))
@@ -120,54 +124,6 @@ function fetchDataWithFormAndJson(url, method, formDataObject, jsonObject) {
 
 
 
-function MainPageLoaded() {
-	if (document.querySelector('div.chatBox')) {
-		function SendMyMessage(msg, element){
-			if (msg.replaceAll('\n','').length == 0 && selectedFile == null) {return}
-			if (CanSendMessages === true) {
-				if (selectedFile !== null) {
-					fetchDataWithFormAndJson('/send', 'POST', {file: selectedFile}, {user_id: localStorage.getItem('authName'+authVersion), message: msg, pass: localStorage.getItem('password'+authVersion)}).then(res=>{
-						createMessageInChat(res, true);
-						element.value = '';
-					})
-					selectedFile = null;
-					ClearAttachedFiles();
-					element.value = '';
-				} else {		
-					fetchData('/send', 'POST', {user_id: localStorage.getItem('authName'+authVersion), message: msg, pass: localStorage.getItem('password'+authVersion)}).then(res=> {
-						element.value = '';
-						createMessageInChat(res, true)
-					})
-				}
-			} else {
-				element.value = element.replace('\n', '')
-			}
-		}
-		
-		
-		let chatBox = document.querySelector('div.chatBox')
-		let chat = chatBox.querySelector('div#chat')
-		let chatInput = chatBox.querySelector('#myMessage')
-		chatInput.addEventListener('keypress', function(e){
-			if (e.key === "Enter" && !isShiftPressed || e.key === "Enter" && selectedFile != null) {
-				SendMyMessage(chatInput.value, chatInput);
-			}
-			if (!isShiftPressed && !CanSendMessages) {
-				e.preventDefault();
-			}
-		})
-		if (localStorage.getItem('authName'+authVersion) !== null) {
-			fetchStream()
-		}
-		
-		document.querySelector('.imWritingMyMessage .sendMsg').addEventListener("click", (e) => {
-			SendMyMessage(chatInput.value, chatInput);
-		});
-	}
-	
-	
-	
-}
 
 
 let isShiftPressed = false;

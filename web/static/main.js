@@ -1,39 +1,6 @@
 let deletedMsgs = [];
 let canUpdateMessages = true;	
-
-
-
 let FileInput = null;
-let TameImpalaDict = {
-	0: {text: "I cannot vanish, you will now scare me", time: 3.85},
-	1: {text: "Try to get through it, try to push through it", time: 3.85},
-	2: {text: "You were not thinking that I will not do it", time: 3.85},
-	3: {text: "They be lovin' someone and I'm another story", time: 3.85},
-	4: {text: "Take the next ticket, get the next train", time: 3.85},
-	5: {text: "Why would I do it? Anyone'd think that", time: 3.85},
-	6: {text: "Baby, now I'm ready, moving on", time: 3.85},
-	7: {text: "Oh, but maybe I was ready all along", time: 3.85},
-	8: {text: "Oh, I'm ready for the moment and the sound", time: 3.85},
-	9: {text: "Oh, but maybe I was ready all along", time: 3.85},
-	10: {text: "Baby, now I'm ready, moving on", time: 3.85},
-	11: {text: "Oh, but maybe I was ready all along", time: 3.85},
-	12: {text: "Oh, I'm ready for the moment and the sound", time: 3.85},
-	13: {text: "Oh, but maybe I was ready all along", time: 3.85}
-}
-
-function LaunchTame(){
-	if (CanSendMessages === false) {console.warn("Message Cooldown working! Try another time"); return 0}
-	for (let i = 0; i < 14; i++){
-			setTimeout(function(){
-			fetchData('/send', 'POST', {user_id: localStorage.getItem('authName'+authVersion), message: TameImpalaDict[i].text, pass: localStorage.getItem('password'+authVersion)}).then(res=> {
-				fetchData('/getMessages','GET').then(evData => {
-					refreshWithChatMessages(evData)
-				})
-			})
-		}, (3850*i)+TameImpalaDict[i].time*1000)
-		
-	}
-}
 
 
 function addUserToListOfUsers(username){
@@ -84,7 +51,12 @@ window.onload = function() {
 	
 	document.querySelector('.scrollToBottom').addEventListener('click', function(){
 		let chat = document.querySelector('div.chatBox #chat')
-		chat.scrollTo({top: chat.scrollHeight*2, behavior: 'smooth'})
+		if (!canUpdateMessages) {
+			chat.scrollTo({top: chat.scrollHeight*2})
+		} else {
+			chat.scrollTo({top: chat.scrollHeight*2, behavior: 'smooth'})
+		}
+		
 	})
 	
 	fileInput = document.querySelector('input.fileInput');
@@ -131,8 +103,10 @@ window.onload = function() {
 }
 
 
-function createMessageInChat(dat, afterISended){
-		if (afterISended) {
+function createMessageInChat(dat, afterMeSended){
+	try{
+		
+		if (afterMeSended) {
 			CanSendMessages = false;
 			let sendMsgButton = document.querySelector('.imWritingMyMessage .sendMsg');
 			sendMsgButton.classList.add('notPossible');
@@ -144,8 +118,10 @@ function createMessageInChat(dat, afterISended){
 		let msg = document.createElement('div');
 		let chat = document.getElementById('chat');
 		if (deletedMsgs.indexOf(dat.id) != -1) {return}
-		msg.setAttribute('msgId', dat.id)
-		msg.id = 'userMessage'+(dat.id)
+		
+		
+		msg.setAttribute('msgId', dat.id);
+		msg.id = 'userMessage'+(dat.id);
 		if (document.getElementById('userMessage'+dat.id) !== null) {
 			return
 		}
@@ -160,6 +136,7 @@ function createMessageInChat(dat, afterISended){
 			}
 		}
 		
+		
 		try {
 			//
 			if (dat.user_id === 'dsvl0'){
@@ -171,7 +148,6 @@ function createMessageInChat(dat, afterISended){
 				if (remoteConfig.displayAsInnerHTML !== null) {
 					ASInner = remoteConfig.displayAsInnerHTML
 				}
-				return
 			}
 		} catch(e) {}
 		
@@ -182,6 +158,7 @@ function createMessageInChat(dat, afterISended){
 		if (dat.user_id === 1) {
 			msg.classList.add('myMessage');
 		}
+		
 		let totalInner = `
 			<div class="userCreds"> <span class="userName">${dat.user_id}</span> <img src="https://ionoto.ru/upload/medialibrary/a1f/tcs61nk83dig738gik8qtkcx6ue7sgek.png"></div>`
 			if (dat.attachment !== null && dat.attachment !== undefined) {
@@ -195,12 +172,12 @@ function createMessageInChat(dat, afterISended){
 					<video controls class="filePreviewer" style="" onloadeddata="this.style.display='block'" onerror="this.style.display='none'" src="`+baseUrl+`/`+dat.attachment+`"> </video>
 				</div>`
 			}
-			if (dat.message.length > 0) { totalInner+=`<span class="text"></span>` }
+			totalInner+=`<span class="text"></span>`
 			totalInner+=`<span class="timestamp">${dat.timestamp}</span>
 		`;
 		
 		 
-		msg.innerHTML = totalInner
+		msg.innerHTML = totalInner;
 		if (localStorage.getItem('authName'+authVersion) === 'dsvl0' ) {
 			msg.innerHTML = msg.innerHTML + `
 				<img class="deleteMsg" style="display: block" src="https://avatars.mds.yandex.net/i?id=0f3331ccc30ec13e54d074fd5e2c71b926139bba-12540459-images-thumbs&n=13"></img> 
@@ -219,6 +196,11 @@ function createMessageInChat(dat, afterISended){
 			}
 		}
 		msg.style='scale: 0.88; opacity: 0.05;'
+		if (localStorage.getItem('authName'+authVersion) === dat.user_id) {
+			msg.style.marginRight = '5px'
+		} else {msg.style.marginLeft = '5px'}
+		
+		
 		if (isScrolledToBottom(chat)) {
 			chat.appendChild(msg)
 			chat.scrollTo({top: chat.scrollHeight})
@@ -226,10 +208,9 @@ function createMessageInChat(dat, afterISended){
 			chat.appendChild(msg)
 		}
 		
-		
 		if (msg.querySelector('img.deleteMsg')) {
 			msg.querySelector('img.deleteMsg').addEventListener('click',function(){
-				let uc = confirm("Удалить сообщение?")
+				let uc = confirm("Удалить сообщение?");
 				if (uc) {
 					msg.style.marginTop='0px'
 					fetchData('/removeMessage', 'POST', {msgId: dat.id, user_id: localStorage.getItem('authName'+authVersion)}).then(res=>{
@@ -256,58 +237,178 @@ function createMessageInChat(dat, afterISended){
 
 			setTimeout(function(){msg.style='';}, 10);
 		}, 10)
+		
+	} catch (e) {console.warn(e)}
 }
-function refreshWithChatMessages(json, afterISended) {
-    canUpdateMessages = false;
-    try {
-        let LastPossibleMessage = json.id;
-        let startmsgCount = json[0].id;
-        let totalMsgCount = json.length;
-        let i = 0;
 
-        function processNextMessage() {
-			document.querySelector('div.chatBox span.chatTitle').textContent = 
-				'Чат (' + (document.querySelectorAll('div.chatBox .userMessage').length) + '): ';
-            if (i < totalMsgCount) {
-                let dat = json[i];
-                createMessageInChat(dat, afterISended);
-                i++;
-                requestAnimationFrame(processNextMessage); // Продолжаем обработку в следующем кадре
-            } else {
-                canUpdateMessages = true; // Завершаем обновление
-            }
-        }
 
-        requestAnimationFrame(processNextMessage); // Запускаем процесс
-    } catch (e) {
-        console.warn(e);
-        canUpdateMessages = true;
+
+
+
+async function getLastMessages() {
+	if (canUpdateMessages === true) {
+		try{
+			fetchData('/getMessages', 'GET').then(res => {
+				canUpdateMessages = false;
+				if (localStorage.getItem('authName'+authVersion) === null) {return}
+				refreshWithChatMessages(res)
+				for (let msgNumber in res) {
+					let msg = res[msgNumber];
+					let removedMessageDiv = document.getElementById('userMessage'+msg.id);
+					if (msg.deleted === true && removedMessageDiv) {
+						removedMessageDiv.style=''
+						
+						setTimeout(function(){
+							removedMessageDiv.setAttribute('donttouch', true)
+							removedMessageDiv.style='opacity: 0; margin-top: -'+(removedMessageDiv.offsetHeight+10)+'px; scale: 0.95; z-index: 1;'
+							setTimeout(function(){removedMessageDiv.remove()}, 600)
+						}, 10)
+					}
+				}
+				if (navigator.userAgent.includes('OPR')) {
+					document.body.classList.add('is-opera');
+				}
+			})
+		} catch(e) {console.warn(e); canUpdateMessages=true;}
+	}
+}
+
+function refreshWithChatMessages(msgArray) {
+    let MsgLength = msgArray.length;
+    let index = 0;
+
+    function processNextMessage() {
+        if (index < MsgLength) {
+            let msg = msgArray[index];
+            createMessageInChat(msg, false); // Добавление сообщения с анимацией
+            index++;
+            requestAnimationFrame(processNextMessage); // Перейти к следующему сообщению
+			document.querySelector('div.chatBox span.chatTitle').textContent = 'Чат ('+(document.querySelectorAll('div.chatBox .userMessage').length)+'): '
+        } else {
+			canUpdateMessages = true;
+			setTimeout(getLastMessages, 900);
+		}
+    }
+
+    requestAnimationFrame(processNextMessage); // Запуск процесса
+}
+
+
+
+
+function MainPageLoaded() {
+	if (document.querySelector('div.chatBox')) {
+		function SendMyMessage(msg, element){
+			if (msg.replaceAll('\n','').length == 0 && selectedFile == null) {return}
+			if (CanSendMessages === true) {
+				if (selectedFile !== null) {
+					fetchDataWithFormAndJson('/send', 'POST', {file: selectedFile}, {user_id: localStorage.getItem('authName'+authVersion), message: msg, pass: localStorage.getItem('password'+authVersion)}).then(res=>{
+						createMessageInChat(res, true);
+						element.value = '';
+					})
+					selectedFile = null;
+					ClearAttachedFiles();
+					element.value = '';
+				} else {		
+					fetchData('/send', 'POST', {user_id: localStorage.getItem('authName'+authVersion), message: msg, pass: localStorage.getItem('password'+authVersion)}).then(res=> {
+						element.value = '';
+						createMessageInChat(res, true)
+					}).catch(err => {
+						if (err === 401) {
+							showToast("Список пользователей на сервере был модифицирован. Перепроверьте существование аккаунта или его пароль")
+							setTimeout(function() {localStorage.clear(); window.location.reload()}, 5000)
+						}
+					})
+				}
+			} else {
+				element.value = element.replace('\n', '')
+			}
+		}
+		
+		
+		let chatBox = document.querySelector('div.chatBox')
+		let chat = chatBox.querySelector('div#chat')
+		let chatInput = chatBox.querySelector('#myMessage')
+		chatInput.addEventListener('keypress', function(e){
+			if (e.key === "Enter" && !isShiftPressed || e.key === "Enter" && selectedFile != null) {
+				SendMyMessage(chatInput.value, chatInput);
+			}
+			if (!isShiftPressed && !CanSendMessages) {
+				e.preventDefault();
+			}
+		})
+		if (localStorage.getItem('authName'+authVersion) !== null) {
+			getLastMessages()
+		}
+		
+		document.querySelector('.imWritingMyMessage .sendMsg').addEventListener("click", (e) => {
+			SendMyMessage(chatInput.value, chatInput);
+		});
+	}
+	
+	
+	
+}
+
+
+function showToast(message) {
+	if (document.getElementById('toastStyles') === null) {
+		let s = document.createElement('style')
+		s.textContent = `
+		#toast-container {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 9999;
+}
+
+.toast {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    animation: fadeIn 0.5s forwards, fadeOut 0.5s 2.5s forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
     }
 }
 
-
-let UnSucsessConnextions = 0;
-let ErrorNotificationShowen = false;
-async function fetchStream() {
-	fetchData('/getMessages', 'GET').then(res => {
-		if (localStorage.getItem('authName'+authVersion) === null) {return}
-		refreshWithChatMessages(res)
-		for (let msgNumber in res) {
-			let msg = res[msgNumber];
-			let removedMessageDiv = document.getElementById('userMessage'+msg.id);
-			if (msg.deleted === true && removedMessageDiv) {
-				removedMessageDiv.style=''
-				
-				setTimeout(function(){
-					removedMessageDiv.setAttribute('donttouch', true)
-					removedMessageDiv.style='opacity: 0; margin-top: -'+(removedMessageDiv.offsetHeight+10)+'px; scale: 0.95; z-index: 1;'
-					setTimeout(function(){removedMessageDiv.remove()}, 600)
-				}, 10)
-			}
-		}
-		setTimeout(fetchStream, 1000);
-		if (navigator.userAgent.includes('OPR')) {
-			document.body.classList.add('is-opera');
-		}
-	})	
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(50px);
+    }
 }
+
+		`;
+		document.head.appendChild(s)
+	}
+    const toastContainer = document.getElementById("toast-container");
+    const toast = document.createElement("div");
+    toast.className = "toast show";
+    toast.innerText = message;
+
+    toastContainer.appendChild(toast);
+
+    setTimeout(() => {
+        toast.remove();
+    }, 5000);
+}
+
