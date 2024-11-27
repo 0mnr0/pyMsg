@@ -59,11 +59,11 @@ def regUser(userName, userPassword):
 
 
 #get all messages
-def get_all(db, collection_name):
+def get_all(db, collection_name, numbersOfMessages=500):
     collection = db[collection_name]
     messages = list(collection.find({}, {"_id": 0})
         .sort("_id", -1)
-        .limit(600)
+        .limit(numbersOfMessages)
     )
     messages.reverse()
     return messages

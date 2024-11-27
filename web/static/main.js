@@ -1,3 +1,4 @@
+let NotLoadedYet = true;
 let deletedMsgs = [];
 let canUpdateMessages = true;	
 let FileInput = null;
@@ -250,7 +251,10 @@ function createMessageInChat(dat, afterMeSended){
 async function getLastMessages() {
 	if (canUpdateMessages === true) {
 		try{
-			fetchData('/getMessages', 'GET').then(res => {
+			let additionalOptions = ''
+			if (!NotLoadedYet) {additionalOptions = '?fromLast=45'}
+			fetchData('/getMessages'+additionalOptions, 'GET').then(res => {
+				if (NotLoadedYet===true) {NotLoadedYet = false}
 				canUpdateMessages = false;
 				if (localStorage.getItem('authName'+authVersion) === null) {return}
 				refreshWithChatMessages(res)
@@ -282,13 +286,15 @@ function refreshWithChatMessages(msgArray) {
     function processNextMessage() {
         if (index < MsgLength) {
             let msg = msgArray[index];
+
             createMessageInChat(msg, false); // Добавление сообщения с анимацией
             index++;
             requestAnimationFrame(processNextMessage); // Перейти к следующему сообщению
-			document.querySelector('div.chatBox span.chatTitle').textContent = 'Чат ('+(document.querySelectorAll('div.chatBox .userMessage').length)+'): '
+			document.querySelector('div.chatBox span.chatTitle').textContent = 'Чат ('+(document.querySelectorAll('div.chatBox .userMessage').length)+'): ';
+			
         } else {
 			canUpdateMessages = true;
-			setTimeout(getLastMessages, 900);
+			setTimeout(getLastMessages, 500);
 		}
     }
 

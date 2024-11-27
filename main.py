@@ -103,7 +103,7 @@ def send():
     if request.remote_addr == "192.168.102.111": pass
     if 'file' in request.files:
         file = request.files['file']
-        file.save(f'uploads\\{file.filename}')
+        file.save(f'uploads/{file.filename}')
         data = request.form.get('json')
         print(request.form)
         data = json.loads(data)
@@ -156,7 +156,13 @@ def removeMessage():
 @limiter.limit("120 per minute")
 @app.route('/getMessages', methods=['GET'])
 def getMessages():
-    return dictOfMessages
+    dct = None
+    from_last = request.args.get('fromLast')
+    if from_last is not None:
+        dct = get_all(db, "messages", int(from_last))
+    else:
+        dct = get_all(db, "messages")
+    return dct
 
 
 app.run(port=8970, host="0.0.0.0", debug=True)
