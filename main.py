@@ -16,7 +16,6 @@ app = Flask(__name__, template_folder="web", static_folder='web/static')
 CORS(app)
 
 PeoplesOnline = []
-dictOfMessages = {}
 deleted_messages = []
 
 limiter = Limiter(
@@ -56,7 +55,9 @@ def userList():
     for user in users:
         finalUsers[i] = user["user_id"]
         i+=1
-    return finalUsers
+
+    # Return example: {"0": "user1", "1": "user2"}
+    return finalUsers # Тип данных: dict
 
 
 @limiter.limit("400 per minute")
@@ -64,7 +65,7 @@ def userList():
 def isUserExists():
     data = request.get_json()
     user_id = data['name']
-    return {'isRegistered': isRegistered(user_id), 'name': user_id}
+    return {'isRegistered': isRegistered(user_id), 'name': user_id} # Тип данных: dict
 
 
 @app.route("/userRegister", methods=["POST"])
@@ -84,7 +85,7 @@ def userRegister():
             'fulltimestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "id": id, "ChatUsersList": userName}
     insert_document(db, collection_name="messages", data=data)
     regUser(userName, userPassword)
-    return {"status": "OK"}
+    return {"status": "OK"} # Тип данных: dict
 
 
 @limiter.limit("15 per minute")
@@ -95,7 +96,7 @@ def userLogin():
     userPassword = data.get('pass')
     if not verifyUser(userName, userPassword):
         return {"status": "Unauthorized"}, 401
-    return {"status": "OK"}
+    return {"status": "OK"} # Тип данных: dict
 
 @app.route('/send', methods=['POST'])
 @limiter.limit("200 per minute")
@@ -115,7 +116,7 @@ def send():
 
         retDat = send_message(user_id, message, datetime.now().strftime("%H:%M:%S"), 'uploads\\'+file.filename, data.get('isAi'))
         retDat['_id'] = None
-        return retDat
+        return retDat # Тип данных: dict
 
     else:
         data = request.get_json()
@@ -128,20 +129,7 @@ def send():
 
         retDat = send_message(user_id, message, datetime.now().strftime("%H:%M:%S"), None, data.get('isAi'))
         retDat['_id'] = None
-        return retDat
-
-
-def refreshMsgs():
-    global dictOfMessages
-    while True:
-        messages_dict = get_all(db, "messages")
-        dictOfMessages = json.dumps(messages_dict)
-        time.sleep(0.1)
-
-
-msgRefresh = Thread(target=refreshMsgs)
-msgRefresh.daemon = True
-msgRefresh.start()
+        return retDat # Тип данных: dict
 
 
 
@@ -151,19 +139,19 @@ def removeMessage():
     data = request.get_json()
     id = data['msgId']
     removemessage(id)
-    return {'status': "OK"}
+    return {'status': "OK"} # Тип данных: dict
+
 
 @limiter.limit("120 per minute")
 @app.route('/getMessages', methods=['GET'])
 def getMessages():
-    dct = None
+    dct = {}
     from_last = request.args.get('fromLast')
     if from_last is not None:
         dct = get_all(db, "messages", int(from_last))
     else:
         dct = get_all(db, "messages")
-    return dct
+    return dct # Тип данных: list (с dict внутри)
 
 
 app.run(port=8970, host="0.0.0.0", debug=True)
-#app.run(port=898, host="0.0.0.0", debug=True)

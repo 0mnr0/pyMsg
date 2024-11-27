@@ -3,24 +3,27 @@ from bdOps import *
 
 
 def get_all(db, collection_name):
+    # Получить все элементы в коллекции
     collection = db[collection_name]
-    return list(collection.find())
+    return list(collection.find()) # Тип данных: list (c dict внутри)
 
 def insert_document(db, collection_name, data):
-    createIndexIfNotExists("messages")
-    collection = db[collection_name]
-    result = collection.insert_one(data)
-    return result.inserted_id  # Возвращает ID добавленного документа
+    createIndexIfNotExists("messages") # Создать раздел "messages" если его нет
+    collection = db[collection_name] # Получить коллекцию
+    result = collection.insert_one(data) # Добавить документ
+    # Возвращает ID добавленного документа
+    return result.inserted_id
 
 def listUsers():
     data = get_all(db, "users")
-    return data
+    return data # Тип данных: list
 
 
 def removemessage(id):
     filter_query = {'id': id}
     update_query = {'$set': {'deleted': True, 'message': None, 'timestamp': None, 'fulltimestamp': None, 'user_id': None}}
     db.messages.update_many(filter_query, update_query)
+
 
 def remove_collection(db, collection_name, confirm=False):
     if confirm:
@@ -36,7 +39,8 @@ def send_message(user_id, message, timestamp, file=None, isAi=False):
         filename = file.split('\\')[-1]
     data = { "user_id": user_id, "message": message, "timestamp": timestamp, 'fulltimestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "id": id, "attachment": file, "filename": filename, "isAi": isAi}
     insert_document(db, collection_name="messages", data=data)
-    return data
+
+    return data # Тип данных: dict
 
 def isRegistered(user_id):
     data = get_all(db, "users")
@@ -64,9 +68,13 @@ def get_all(db, collection_name, numbersOfMessages=500):
     messages = list(collection.find({}, {"_id": 0})
         .sort("_id", -1)
         .limit(numbersOfMessages)
-    )
-    messages.reverse()
-    return messages
+    ) # Тип данных: list (с dict внутри, ограниченный numbersOfMessages)
+
+
+    messages.reverse() # В привычной человеку последовательности
+
+    # Пример данных: [{ "user_id": "dsvl", "message": "text in message", "timestamp": "12:34:56", 'fulltimestamp': "2024-11-27 12:34:56"), "id": 1, "attachment": None, "filename": None, "isAi": False}, {...}, ...]
+    return messages # Тип данных: list (с dict внутри)
 
 
 def appendID(db, ContinueAfterCreation=False):
@@ -85,6 +93,6 @@ def appendID(db, ContinueAfterCreation=False):
     data["id"] = currentId + 1
     collection = db["ids"]
     collection.update_one({}, {"$set": data})
-    return currentId
+    return currentId # Тип данных: int
 
 appendID(db, True)

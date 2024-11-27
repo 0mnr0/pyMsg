@@ -18,6 +18,3 @@ def createIndexIfNotExists(dbname):
         global db
         db = client[dbname]
         return db
-
-
-
