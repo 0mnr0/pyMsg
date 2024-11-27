@@ -7,12 +7,12 @@ from flask_limiter.util import get_remote_address
 
 from flask import *
 from flask_cors import CORS
-from dbs import *
+from databases import *
 from queue import *
 
 
 event_queue = Queue()
-app = Flask(__name__, template_folder="web", static_folder='web/static',)
+app = Flask(__name__, template_folder="web", static_folder='web/static')
 CORS(app)
 
 PeoplesOnline = []
