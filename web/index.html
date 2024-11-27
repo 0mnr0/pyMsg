@@ -69,15 +69,15 @@
 		div.chatBox .UserList {width: 20%}
 		div.chatBox #chat { z-index: 0; position: relative; margin-top: 2px;  height: calc(100% - 88px); display: flex; flex-direction: column; width: 100%; gap: 10px; overflow: auto; padding: 3px; margin-bottom: 10px}
 		div.chatBox #myMessage {z-index: 61; outline: none; border: solid 2px white; padding: 5px; border-radius: 25px; width: 100%; color: white; background: #222222; padding-right: 50px; resize: none; height: 38px; padding-left: 40px}
-		div.chatBox .userMessage { max-width: 45%; z-index: 50; width: 100%; transition: all .5s cubic-bezier(0, 0.36, 0.25, 1);  position: relative;  background: #111111; padding: 5px; border-radius: 15px 15px 15px 5px; display: flex; flex-direction: column; border: solid 2px #555; width: fit-content; min-width: 160px}
+		div.chatBox .userMessage { max-width: 45%; z-index: 50; width: 100%; transition: all .5s cubic-bezier(0, 0.36, 0.25, 1);  position: relative;  background: #111111; padding: 5px; border-radius: 20px 20px 20px 5px; display: flex; flex-direction: column; border: solid 2px #555; width: fit-content; min-width: 160px}
 		
 		
 		.attachmentBlock {border-radius: 12px; background: #090909; padding: 5px}
 		body:not(.is-opera) div.chatBox .userMessage.myMessage { direction: rtl; }
-		div.chatBox .userMessage.myMessage { float: right; margin-left: auto; text-align: right; width: fit-content; border-radius: 15px 15px 3px 15px; padding: 0px 10px }
-		div.chatBox .userMessage img.deleteMsg { aspect-ratio: 1/1; display: none; width: 20px; padding: 2px; background: white; position: absolute; top: 5px; right: 5px; z-index: 51; cursor: pointer; transition: all .2s; border-radius: 200px; }
+		div.chatBox .userMessage.myMessage { float: right; margin-left: auto; text-align: right; width: fit-content; border-radius: 20px 20px 3px 20px; padding: 0px 10px }
+		div.chatBox .userMessage img.deleteMsg { margin: 5px 5px 0px 0px; aspect-ratio: 1/1; display: none; width: 20px; padding: 2px; background: white; position: absolute; top: 5px; right: 5px; z-index: 51; cursor: pointer; transition: all .2s; border-radius: 200px; }
 		div.chatBox .userMessage img.deleteMsg:hover {scale: 1.05}
-		div.chatBox .userMessage.myMessage img.deleteMsg { display: block; right: auto; left: 5px}
+		div.chatBox .userMessage.myMessage img.deleteMsg { display: block; right: auto; top: 2px; left: 6px; scale: 0.8}
 		div.chatBox .systemMessage.userMessage { border: solid 2px transparent !important; border-radius: 200px !important; transform: translate(-50%, 0%); left: 50%; text-align: center; margin: 10px 0px; padding: 5px 30px}
 		div.chatBox .systemMessage.userMessage .userName { display: none }
 		div.chatBox .systemMessage.userMessage img:not(.deleteMsg) { display: none }
@@ -140,6 +140,11 @@
 		div.MainContent .UserList.hidden {background: transparent;}
 		div.MainContent .UserList.hidden div.chatBox span.chatTitle, div.MainContent .UserList.hidden span.chatTitleUsers, div.MainContent .UserList.hidden .userDiv, div.MainContent .UserList.hidden .userDiv * {opacity: 0}
 		div.chatBox.fullyRound {width: 100%; border-radius: 25px; margin-left: 0px}
+		
+		div.chatBox .userMessage.ai {
+			background: linear-gradient(#111 0 0) padding-box, linear-gradient(to right, #9c20aa, #fb3570) border-box;
+		  border: 2px solid transparent;
+		}
 	</style>
 	<script src="static/all.js"></script>
 	<script src="static/main.js"></script>

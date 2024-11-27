@@ -159,8 +159,10 @@ function createMessageInChat(dat, afterMeSended){
 			msg.classList.add('myMessage');
 		}
 		
+		let AvatarURL = "https://ionoto.ru/upload/medialibrary/a1f/tcs61nk83dig738gik8qtkcx6ue7sgek.png";
+		if (dat.isAi === true) {AvatarURL="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Google_Bard_logo.svg/1200px-Google_Bard_logo.svg.png"; msg.classList.add('ai')}
 		let totalInner = `
-			<div class="userCreds"> <span class="userName">${dat.user_id}</span> <img src="https://ionoto.ru/upload/medialibrary/a1f/tcs61nk83dig738gik8qtkcx6ue7sgek.png"></div>`
+			<div class="userCreds"> <span class="userName">${dat.user_id}</span> <img src="${AvatarURL}"></div>`
 			if (dat.attachment !== null && dat.attachment !== undefined) {
 				let attachmentName = dat.attachment.split("\\") [dat.attachment.split("\\").length-1]
 				totalInner+=`

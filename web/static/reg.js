@@ -105,7 +105,12 @@ window.onload = function() {
 						window.location.href = (window.location.href.replaceAll('/reg',''));
 					}
 				}).catch(err=>{
-					alert(err);
+					if (err === 401) {
+						alert("Неправильный логин или пароль")
+					} else {
+						alert("Что - то пошло не так");
+						console.warn(err)
+					}
 					ContinueButton.disabled = false;
 				})
 			}

@@ -113,7 +113,7 @@ def send():
         if not verifyUser(user_id, userPass):
             return {"status": "Unauthorized"}, 401
 
-        retDat = send_message(user_id, message, datetime.now().strftime("%H:%M:%S"), 'uploads\\'+file.filename)
+        retDat = send_message(user_id, message, datetime.now().strftime("%H:%M:%S"), 'uploads\\'+file.filename, data.get('isAi'))
         retDat['_id'] = None
         return retDat
 
@@ -126,7 +126,7 @@ def send():
         if not verifyUser(user_id, userPass):
             return {"status": "Unauthorized"}, 401
 
-        retDat = send_message(user_id, message, datetime.now().strftime("%H:%M:%S"))
+        retDat = send_message(user_id, message, datetime.now().strftime("%H:%M:%S"), None, data.get('isAi'))
         retDat['_id'] = None
         return retDat
 
