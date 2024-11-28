@@ -1,6 +1,6 @@
 //chat.jprq.site
 const baseUrl = window.location.origin;
-const authVersion = 'v2.1';
+const authVersion = 'v2.2';
 var CanSendMessages = true;
 var selectedFile = null;
 
