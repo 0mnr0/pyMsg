@@ -305,7 +305,9 @@ function refreshWithChatMessages(msgArray) {
 
 
 function MainPageLoaded() {
+	if (document.querySelector('.sayMyName')) { 
 	document.querySelector('.sayMyName').textContent = localStorage.getItem('authName'+authVersion)
+	}
 	if (document.querySelector('div.chatBox')) {
 		function SendMyMessage(msg, element){
 			if (msg.replaceAll('\n','').length == 0 && selectedFile == null) {return}
